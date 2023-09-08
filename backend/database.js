@@ -1,5 +1,5 @@
 // https://www.youtube.com/watch?v=Hej48pi_lOc  
-// 11:31
+// 19:45
 
 import dotenv from "dotenv";
 import mysql from "mysql2";
@@ -13,15 +13,33 @@ const pool = mysql.createPool({  // creates pool of connections
 }).promise(); // allows to use async methods with promises over callbacks (?)
 
 
-async function getTrainsScheduledTable() {
+export async function getTrainsScheduledTable() {
     const [rows] = await pool.query("SELECT * FROM trains_scheduled");
     return rows;
 }
 
-async function getUsers() {
-    const [rows] = await pool.query("SELECT * FROM users");
-    return rows;
+export async function getUsers() {
+    const result = await pool.query("SELECT * FROM users");
+    return result;
+}
+
+export async function getUser(username) {
+    const [rows] = await pool.query(`
+    SELECT * FROM users
+    WHERE username = ?
+    `, [username])
+    return rows[0]; // cleaner result without the array stuff around it
+}
+
+export async function createUser(username, password) {
+    const result = await pool.query(`
+    INSERT INTO users (Username,Password)
+    VALUES (?, ?)
+    `, [username, password]);
+    return getUser(username);
 }
 
 const users = await getUsers();
-console.log(users);
+const testuser = await getUser('testtyp02');
+// const result = await createUser('testtyp04', 'ggerge');
+console.log(testuser);
