@@ -1,3 +1,6 @@
+// https://www.youtube.com/watch?v=Hej48pi_lOc  
+// 11:31
+
 import dotenv from "dotenv";
 import mysql from "mysql2";
 dotenv.config();
