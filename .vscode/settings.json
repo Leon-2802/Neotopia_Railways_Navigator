@@ -10,7 +10,7 @@
             "port": 3306,
             "driver": "MySQL",
             "name": "test",
-            "username": "Le_go",
+            "username": "root",
             "password": "FullstackSmasher01",
             "database": "neotopia_railways_ticketing"
         }
