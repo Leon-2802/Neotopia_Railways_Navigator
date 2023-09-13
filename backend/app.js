@@ -17,12 +17,27 @@ app.get('/users/:username', async (req, res) => {
     res.send(user);
 });
 
-app.post('/users', async (req, res) => {
+app.post('/signup', async (req, res) => {
     const { username, password } = req.body; // grab user data from http request
-    const hash = await bcrypt.hash(password, 10);
-    console.log(hash);
-    const user = await createUser(username, password);
-    res.status(201).send(user); // 201 = successfully created
+    const hash = await bcrypt.hash(password, 13);
+    await createUser(username, hash);
+    res.status(201).send(`user "${username}" successfully created`); // 201 = successfully created
+});
+
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+    const userResponse = await getUser(username);
+    if (!userResponse) {
+        res.send(`user "${username}" not found`);
+        return;
+    }
+    const passwordValid = await bcrypt.compare(password, userResponse.Password);
+    if (!passwordValid) {
+        res.send("wrong password");
+        return;
+    }
+
+    res.send("Login successful");
 });
 
 app.use((err, req, res, next) => {

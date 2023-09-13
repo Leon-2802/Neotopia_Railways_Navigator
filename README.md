@@ -5,7 +5,7 @@
 ## Todos:
 
 ### Backend:
-- Error handling: Log error messages and send them in response
+- Error handling: Catch error on signup and log out message
 - Expand database.js and api to the growing database
 
 ### Frontend:
@@ -14,3 +14,7 @@
 ### Database:
 - Plan further tables
 - Start with implementing a table for a test-train
+
+
+### Backlog:
+- Learn about SSL encryption, so data can be safely transferred through http requests
