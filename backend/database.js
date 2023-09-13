@@ -1,5 +1,4 @@
-// https://www.youtube.com/watch?v=Hej48pi_lOc  
-// 19:45
+//Encryption: https://www.youtube.com/watch?v=AzA_LTDoFqY&list=PL0X6fGhFFNTcBB9N4fPyMgtOxfvyujiEh&index=20
 
 import dotenv from "dotenv";
 import mysql from "mysql2";
@@ -19,7 +18,7 @@ export async function getTrainsScheduledTable() {
 }
 
 export async function getUsers() {
-    const result = await pool.query("SELECT * FROM users");
+    const [result] = await pool.query("SELECT * FROM users");
     return result;
 }
 
@@ -32,14 +31,9 @@ export async function getUser(username) {
 }
 
 export async function createUser(username, password) {
-    const result = await pool.query(`
+    await pool.query(`
     INSERT INTO users (Username,Password)
     VALUES (?, ?)
     `, [username, password]);
     return getUser(username);
 }
-
-const users = await getUsers();
-const testuser = await getUser('testtyp02');
-// const result = await createUser('testtyp04', 'ggerge');
-console.log(testuser);
