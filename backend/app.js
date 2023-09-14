@@ -5,6 +5,11 @@ import { createUser, getTrainsScheduledTable, getUser, getUsers } from './databa
 
 const app = express();
 app.use(express.json());
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); // wildcard origin - probably not safe to use?
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Origin");
+    next();
+});
 
 app.get('/users', async (req, res) => {
     const users = await getUsers();

@@ -1,4 +1,6 @@
-<input id="username" type="text">
-<input id="pwd" type="password">
-<button id="signup" type="submit">Sign up</button>
-<button id="login" type="submit">Login</button>
+<form [formGroup]="userForm" (ngSubmit)="onSignup()">
+    <input id="username" type="text" placeholder="username" formControlName="username">
+    <input id="password" type="password" placeholder="password" formControlName="password">
+    <button id="signup" type="submit" [disabled]="!userForm.valid">Sign up</button>
+    <!-- <button id="login">Login</button> -->
+</form>

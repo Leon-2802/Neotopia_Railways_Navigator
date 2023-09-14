@@ -10,6 +10,7 @@
 
 ### Frontend:
 - Start with Login page for user authentication and save users in db
+- Why is an error returned when creating new user?
 
 ### Database:
 - Plan further tables
