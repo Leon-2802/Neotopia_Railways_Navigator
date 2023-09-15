@@ -1,5 +1,6 @@
 # Neotopia_Railways_Navigator
- Fake ticketing application, which I developed to teach myself backend development and some UX Design principles.
+ ! Work in Progress !
+ Ficitional ticketing application, which I am developing to teach myself backend development and some UX Design principles.
 
 
 ## Todos:
