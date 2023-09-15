@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import express from 'express';
 import { createUser, getTrainsScheduledTable, getUser, getUsers } from './database.js';
 
