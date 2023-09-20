@@ -1,6 +1,20 @@
-<form [formGroup]="userForm" (ngSubmit)="onSignup()">
-    <input id="username" type="text" placeholder="username" formControlName="username">
-    <input id="password" type="password" placeholder="password" formControlName="password">
-    <button id="signup" type="submit" [disabled]="!userForm.valid">Sign up</button>
-    <!-- <button id="login">Login</button> -->
-</form>
+<mat-tab-group>
+    <mat-tab label="Create user">
+        <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
+            <input id="username" type="text" placeholder="username" formControlName="username">
+            <input id="password" type="password" placeholder="password" formControlName="password">
+            <button id="signup" type="submit" [disabled]="!signupForm.valid">Sign up</button>
+            <!-- <button id="login">Login</button> -->
+        </form>
+    </mat-tab>
+    <mat-tab label="Login">
+        <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+            <input id="username" type="text" placeholder="username" formControlName="username">
+            <input id="password" type="password" placeholder="password" formControlName="password">
+            <input id="rememberMe" type="checkbox" formControlName="rememberMe">
+            <button id="signup" type="submit" [disabled]="!loginForm.valid">Login</button>
+            <!-- <button id="login">Login</button> -->
+        </form>
+    </mat-tab>
+</mat-tab-group>
+<p id="feedback-message" [ngClass]="success ? 'success-message' : 'error-message'">{{feedbackmsg}}</p>

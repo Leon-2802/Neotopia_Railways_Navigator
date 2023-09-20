@@ -33,16 +33,16 @@ app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     const userResponse = await getUser(username);
     if (!userResponse) {
-        res.send(`user "${username}" not found`);
+        res.status(500).send(`user "${username}" not found`);
         return;
     }
     const passwordValid = await bcrypt.compare(password, userResponse.Password);
     if (!passwordValid) {
-        res.send("wrong password");
+        res.status(401).send("wrong password");
         return;
     }
 
-    res.send("Login successful");
+    res.status(200).send("login successful");
 });
 
 app.use((err, req, res, next) => {
