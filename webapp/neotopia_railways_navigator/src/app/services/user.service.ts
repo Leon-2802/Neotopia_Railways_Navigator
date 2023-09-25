@@ -1,8 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, catchError } from "rxjs";
-import { userdata } from "../models/user";
-import { ErrorHandlerService } from "./errorHandler.service";
+import { rememberMeData, userdata } from "../models/user";
 
 
 @Injectable({ providedIn: "root" })
@@ -24,10 +23,39 @@ export class UserService {
             user, { headers: headers, observe: 'response', responseType: 'text' });
     }
 
-    public fetchUser() {
-        // https://www.youtube.com/watch?v=9ZFXXMFSs8A&t=516s
-        // min 6:00
+    public storeUserRemembered(rememberUser: rememberMeData): Observable<any> {
+        let headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*');
+        return this.http.post(
+            'http://localhost:8080/store_remember_user',
+            rememberUser, { headers: headers, observe: 'response', responseType: 'text' });
     }
+
+    public verifyRememberedUser(rememberedUser: rememberMeData): Observable<any> {
+        let headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*');
+        return this.http.post(
+            'http://localhost:8080/check_remember_user',
+            rememberedUser, { headers: headers, observe: 'response', responseType: 'text' });
+    }
+
+    public updateRememberedUser(rememberedUser: rememberMeData): Observable<any> {
+        let headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*');
+        return this.http.post(
+            'http://localhost:8080/update_remember_user',
+            rememberedUser, { headers: headers, observe: 'response', responseType: 'text' });
+    }
+
+    public deleteRememberedUserData(rememberedUser: rememberMeData): Observable<any> {
+        let headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*');
+        return this.http.post(
+            'http://localhost:8080/delete_remember_user',
+            rememberedUser, { headers: headers, observe: 'response', responseType: 'text' });
+    }
+
+    public fetchUser(username: string) {
+        return this.http.get<{ user: userdata }>(
+            `http://localhost:8080/users/${username}`, { responseType: 'json' });
+    }
+
 
     public deleteUser() {
 

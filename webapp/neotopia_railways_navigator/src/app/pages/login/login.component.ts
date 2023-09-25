@@ -1,8 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { userdata } from 'src/app/models/user';
+import { Router } from '@angular/router';
+import { rememberMeData, userdata } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
+import { MathService } from 'src/utils/common/shared/math.service';
 
 @Component({
   selector: 'app-login',
@@ -21,11 +23,12 @@ export class LoginComponent {
     rememberMe: new FormControl<boolean>(false)
   });
 
-  public feedbackmsg: any = "";
+  public feedbackmsglogin: string = "";
+  public feedbackmsgsignup: string = "";
   public success: boolean = false;
 
 
-  constructor(private http: HttpClient, private userService: UserService) { }
+  constructor(private userService: UserService, private router: Router, private mathService: MathService) { }
 
   public onSignup(): void {
     if (this.signupForm.controls.username.value && this.signupForm.controls.password.value) {
@@ -34,14 +37,17 @@ export class LoginComponent {
         password: this.signupForm.controls.password.value
       }
 
-      this.userService.createUser(newUser).subscribe(success => {
-        this.feedbackmsg = success.body;
-        this.success = true;
-        this.forwardToLogin();
-      }, error => { // second parameter is to listen for error
-        this.feedbackmsg = error.error;
-        this.success = false;
-      });;
+      this.userService.createUser(newUser).subscribe({
+        next: (res) => {
+          this.feedbackmsgsignup = res.body;
+          this.success = true;
+          this.forwardToLogin();
+        },
+        error: (err) => {
+          this.feedbackmsgsignup = err.error;
+          this.success = false;
+        }
+      });
     }
   }
 
@@ -54,23 +60,14 @@ export class LoginComponent {
       }
       let rememberMe: boolean = this.loginForm.controls.rememberMe.value;
 
-      // this.userService.compareUserData(logindata).subscribe(success => {
-      //   this.feedbackmsg = success.body;
-      //   this.success = true;
-      //   this.forwardToApp(rememberMe);
-      // }, error => { // second parameter is to listen for error
-      //   this.feedbackmsg = error.error;
-      //   this.success = false;
-      // });;
-
       this.userService.compareUserData(logindata).subscribe({
-        next: (value) => {
-          this.feedbackmsg = value;
+        next: (res) => {
+          this.feedbackmsglogin = res.body;
           this.success = true;
-          this.forwardToApp(rememberMe);
+          this.forwardToApp(logindata.username, rememberMe);
         },
         error: (err) => {
-          this.feedbackmsg = err.error;
+          this.feedbackmsglogin = err.error;
           this.success = false;
         }
       });
@@ -80,15 +77,48 @@ export class LoginComponent {
   private forwardToLogin(): void {
   }
 
-  private forwardToApp(remember: boolean): void {
+  private forwardToApp(username: string, remember: boolean): void {
     if (remember) {
-      this.rememberLogin();
+      this.rememberLogin(username); // navigation happens in rememberLogin function
     }
-    // navigate to home page
+    else {
+      sessionStorage.setItem('logged_user', username);
+      this.router.navigate(['']);
+    }
   }
-  private rememberLogin(): void {
-    // save in cookies that user is logged in => https://stackoverflow.com/questions/6340562/storing-login-information-in-cookies
+  private rememberLogin(username: string): void {
+    // eventuell entfernen, sobald man nur noch nach log-out auf login-path zugreifen kann--------------------------------
+    let check_data: string | null = localStorage.getItem('remembered_user');
+    if (check_data) {
+      let remeberedUser: rememberMeData = JSON.parse(check_data);
+      if (remeberedUser.username === username) {
+        // verifiy user...
+        sessionStorage.setItem('logged_user', username);
+        this.router.navigate(['']);
+        return;
+      }
+    }
+    //--------------------------------------------------------------------------------------------------------------------
 
+    let verifyString: string = this.mathService.randomString(15);
+    const rememberData: rememberMeData = {
+      username: username,
+      verifier: verifyString
+    }
+
+    this.userService.storeUserRemembered(rememberData).subscribe({
+      next: (res) => {
+        this.feedbackmsglogin = res.body;
+        this.success = true;
+        localStorage.setItem('remembered_user', JSON.stringify(rememberData));
+        sessionStorage.setItem('logged_user', username);
+        this.router.navigate(['']);
+      },
+      error: (err) => {
+        this.feedbackmsglogin = err.error;
+        this.success = false;
+      }
+    });
   }
 
 }

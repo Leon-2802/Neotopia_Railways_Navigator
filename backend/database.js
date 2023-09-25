@@ -1,5 +1,3 @@
-//Encryption: https://www.youtube.com/watch?v=AzA_LTDoFqY&list=PL0X6fGhFFNTcBB9N4fPyMgtOxfvyujiEh&index=20
-
 import dotenv from "dotenv";
 import mysql from "mysql2";
 dotenv.config();
@@ -30,10 +28,48 @@ export async function getUser(username) {
     return rows[0]; // cleaner result without the array stuff around it
 }
 
+export async function getRememberedUsers() {
+    const [result] = await pool.query("SELECT * FROM remember_users");
+    return result;
+}
+
 export async function createUser(username, password) {
     await pool.query(`
     INSERT INTO users (Username,Password)
     VALUES (?, ?)
     `, [username, password]);
     return getUser(username);
+}
+
+export async function storeRemeberMeVerifier(username, verifier) {
+    await pool.query(`
+    INSERT INTO remember_users (username,verifier)
+    VALUES (?, ?)
+    `, [username, verifier]);
+    return getRemeberMeVerifier(username);
+}
+
+export async function getRemeberMeVerifier(username) {
+    const [rows] = await pool.query(`
+    SELECT * FROM remember_users
+    WHERE username = ?
+    `, [username]);
+    return rows[0];
+}
+
+export async function updateRemeberMeVerifier(username, verifier) {
+    await pool.query(`
+    UPDATE remember_users 
+    SET verifier = ?
+    WHERE username = ?
+    `, [verifier, username]);
+    return getRemeberMeVerifier(username);
+}
+
+export async function deleteRemeberMeVerifier(username) {
+    await pool.query(`
+    DELETE FROM remember_users
+    WHERE username = ?
+    `, [username]);
+    return `verifier for ${username} deleted`;
 }

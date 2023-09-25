@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import express from 'express';
-import { createUser, getTrainsScheduledTable, getUser, getUsers } from './database.js';
+import { createUser, deleteRemeberMeVerifier, getRemeberMeVerifier, getRememberedUsers, getTrainsScheduledTable, getUser, getUsers, storeRemeberMeVerifier, updateRemeberMeVerifier } from './database.js';
 
 
 const app = express();
@@ -20,6 +20,11 @@ app.get('/users/:username', async (req, res) => {
     const username = req.params.username;
     const user = await getUser(username);
     res.send(user);
+});
+
+app.get('/remembered_users', async (req, res) => {
+    const rememberedUsers = await getRememberedUsers();
+    res.send(rememberedUsers);
 });
 
 app.post('/signup', async (req, res) => {
@@ -43,6 +48,54 @@ app.post('/login', async (req, res) => {
     }
 
     res.status(200).send("login successful");
+});
+
+app.post('/store_remember_user', async (req, res) => {
+    const { username, verifier } = req.body;
+    const hash = await bcrypt.hash(verifier, 13);
+    await storeRemeberMeVerifier(username, hash);
+    res.status(201).send(`user "${username}" will be remembered`);
+});
+
+app.post('/check_remember_user', async (req, res) => {
+    const { username, verifier } = req.body;
+    const getVerifier = await getRemeberMeVerifier(username);
+    if (!verifier) {
+        res.status(500).send(`no verifier for "${username}"`);
+        return;
+    }
+    const verifierValid = await bcrypt.compare(verifier, getVerifier.verifier);
+    if (!verifierValid) {
+        res.status.send(401).send("wrong verifier");
+        return;
+    }
+
+    res.status(200).send("remember me verification successful");
+});
+
+app.post('/update_remember_user', async (req, res) => {
+    const { username, verifier } = req.body;
+    // doesn't need to double check -> only called after verification (probably not safe enough though...)
+    const hash = await bcrypt.hash(verifier, 13);
+    await updateRemeberMeVerifier(username, hash);
+    res.status(201).send(`verifier of user "${username}" has been updated`);
+});
+
+app.post('/delete_remember_user', async (req, res) => {
+    const { username, verifier } = req.body;
+    const getVerifier = await getRemeberMeVerifier(username);
+    if (!verifier) {
+        res.status(500).send(`no verifier for "${username}"`);
+        return;
+    }
+    const verifierValid = await bcrypt.compare(verifier, getVerifier.verifier);
+    if (!verifierValid) {
+        res.status.send(401).send("wrong verifier");
+        return;
+    }
+
+    await deleteRemeberMeVerifier(username);
+    res.status(200).send(`verifier of user "${username}" has been deleted`);
 });
 
 app.use((err, req, res, next) => {
