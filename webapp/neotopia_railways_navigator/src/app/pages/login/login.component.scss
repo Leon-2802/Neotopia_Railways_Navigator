@@ -30,6 +30,10 @@ form {
             color: gray;
         }
     }
+
+    .honeypot {
+        // display: none;
+    }
 }
 
 .error-message {
@@ -39,6 +43,7 @@ form {
 .success-message {
     color: rgb(68, 208, 87);
 }
+
 
 #wrapper {
     display: flex;

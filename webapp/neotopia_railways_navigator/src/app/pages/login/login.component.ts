@@ -15,12 +15,14 @@ export class LoginComponent {
 
   public signupForm = new FormGroup({
     username: new FormControl<string>('', Validators.compose([Validators.required, Validators.minLength(8), Validators.maxLength(30)])),
-    password: new FormControl<string>('', Validators.compose([Validators.required, Validators.minLength(8), Validators.maxLength(50)]))
+    password: new FormControl<string>('', Validators.compose([Validators.required, Validators.minLength(8), Validators.maxLength(50)])),
+    honeypot: new FormControl<string>('', Validators.maxLength(0))
   });
   public loginForm = new FormGroup({
     username: new FormControl<string>('', Validators.compose([Validators.required, Validators.minLength(8), Validators.maxLength(30)])),
     password: new FormControl<string>('', Validators.compose([Validators.required, Validators.minLength(8), Validators.maxLength(50)])),
-    rememberMe: new FormControl<boolean>(false)
+    rememberMe: new FormControl<boolean>(false),
+    honeypot: new FormControl<string>('', Validators.maxLength(0))
   });
 
   public feedbackmsglogin: string = "";
@@ -31,6 +33,12 @@ export class LoginComponent {
   constructor(private userService: UserService, private router: Router, private mathService: MathService) { }
 
   public onSignup(): void {
+    if (this.signupForm.controls.honeypot.dirty) {
+      this.feedbackmsgsignup = 'caught you, filthy bot!';
+      this.success = false;
+      return;
+    }
+
     if (this.signupForm.controls.username.value && this.signupForm.controls.password.value) {
       let newUser: userdata = {
         username: this.signupForm.controls.username.value,
@@ -52,6 +60,12 @@ export class LoginComponent {
   }
 
   public onLogin(): void {
+    if (this.loginForm.controls.honeypot.dirty) {
+      this.feedbackmsglogin = 'caught you, filthy bot!';
+      this.success = false;
+      return;
+    }
+
     if (this.loginForm.controls.username.value && this.loginForm.controls.password.value
       && this.loginForm.controls.rememberMe.value != null) {
       let logindata: userdata = {
