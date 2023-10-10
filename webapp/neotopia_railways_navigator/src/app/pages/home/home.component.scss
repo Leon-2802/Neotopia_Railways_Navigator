@@ -1,0 +1,29 @@
+#top-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    height: 50px;
+
+    nav {
+        display: flex;
+        justify-content: flex-start;
+        gap: 20px;
+        color: rgb(85, 85, 85);
+    }
+
+    #user-profile {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+
+        #profile-icon {
+            color: rgb(85, 85, 85);
+        }
+
+        #profile-icon:hover {
+            cursor: pointer;
+            color: black;
+        }
+    }
+}

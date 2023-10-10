@@ -6,7 +6,7 @@
   "main": "database.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "npx nodemon app.js"
+    "dev": "start npx nodemon app.js && start npx nodemon auth.js"
   },
   "keywords": [],
   "author": "",

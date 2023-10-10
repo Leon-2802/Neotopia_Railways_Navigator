@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
+import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from "@angular/router";
 import { Observable, catchError } from "rxjs";
 import { rememberMeData, userdata } from "../models/user";
 
@@ -7,7 +8,7 @@ import { rememberMeData, userdata } from "../models/user";
 @Injectable({ providedIn: "root" })
 export class UserService {
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private router: Router) { }
 
     public createUser(user: userdata): Observable<any> {
         let headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*'); // cors stuff nochmal durchlesen
@@ -19,7 +20,7 @@ export class UserService {
     public compareUserData(user: userdata): Observable<any> {
         let headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*'); // cors stuff nochmal durchlesen
         return this.http.post(
-            'http://localhost:8080/login',
+            'http://localhost:8081/login',
             user, { headers: headers, observe: 'response', responseType: 'text' });
     }
 
@@ -60,4 +61,18 @@ export class UserService {
     public deleteUser() {
 
     }
+
+    // ! super insecure! Add jwt authentication to it
+    public canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+        //your logic goes here
+        if (sessionStorage.getItem('logged_user'))  // async request with JWT auth
+            return true;
+
+        this.router.navigate(['/login']);
+        return false;
+    }
+}
+
+export const AuthGuard: CanActivateFn = (next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean => {
+    return inject(UserService).canActivate(next, state);
 }

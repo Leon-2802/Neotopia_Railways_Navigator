@@ -1,5 +1,5 @@
 <div id="wrapper">
-    <mat-tab-group id="tab-group">
+    <mat-tab-group id="tab-group" [selectedIndex]="selectedTab">
         <mat-tab label="Create user">
             <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
                 <input id="username" type="text" placeholder="username" formControlName="username">

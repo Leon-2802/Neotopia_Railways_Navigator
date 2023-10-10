@@ -1,2 +1,13 @@
+<div id="top-bar">
+    <nav>
+        <a href="#">Trip planner</a>
+        <a href="#">Timetable</a>
+        <a href="#">My tickets</a>
+    </nav>
+    <div id="user-profile">
+        <mat-icon id="profile-icon" aria-hidden="false" aria-label="user profile icon"
+            fontIcon="account_circle"></mat-icon>
+        <button type="button" (click)="onLogOut()">Log out</button>
+    </div>
+</div>
 <p>Logged in as: {{logged_user}}</p>
-<button type="button" (click)="onLogOut()">Log out</button>

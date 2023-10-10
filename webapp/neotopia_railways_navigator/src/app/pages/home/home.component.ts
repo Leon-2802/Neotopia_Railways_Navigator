@@ -18,7 +18,8 @@ export class HomeComponent {
 
   ngOnInit() {
     // check if user is already logged in
-    this.checkLoginSession();
+    // this.checkLoginSession();
+    this.logged_user = sessionStorage.getItem('logged_user');
   }
 
   public onLogOut() {
@@ -39,70 +40,7 @@ export class HomeComponent {
         }
       });
     }
+
     this.router.navigate(['/login']);
   }
-
-  private checkLoginSession() {
-    let logged_username = sessionStorage.getItem('logged_user');
-    if (logged_username) {
-      this.userService.fetchUser(logged_username).subscribe({
-        next: (res) => {
-          console.log(res);
-          this.logged_user = logged_username;
-        },
-        error: (err) => { console.log(err); }
-      });
-    }
-    else {
-      if (localStorage.getItem('remembered_user')) {
-        this.verifyRememberedUser();
-      }
-      else {
-        this.router.navigate(['/login']);
-      }
-    }
-  }
-
-  private verifyRememberedUser() {
-    let storedData: string | null = localStorage.getItem('remembered_user');
-    if (storedData) {
-      let parsedData: rememberMeData = JSON.parse(storedData);
-      console.log(parsedData);
-
-      this.userService.verifyRememberedUser(parsedData).subscribe({
-        next: (res) => {
-          console.log(res);
-
-          let verifyString: string = this.mathService.randomString(15);
-          const newRememberData: rememberMeData = {
-            username: parsedData.username,
-            verifier: verifyString
-          }
-
-          this.userService.updateRememberedUser(newRememberData).subscribe({
-            next: (res) => {
-              console.log(res);
-              localStorage.setItem('remembered_user', JSON.stringify(newRememberData));
-              this.logged_user = parsedData.username;
-              sessionStorage.setItem('logged_user', parsedData.username);
-            },
-            error: (err) => {
-              console.log(err);
-              this.router.navigate(['/login']);
-            }
-          });
-        },
-        error: (err) => {
-          console.log(err);
-          this.router.navigate(['/login']);
-        }
-      });
-
-    }
-    else {
-      console.log('no data in localstorage');
-      this.router.navigate(['/login']);
-    }
-  }
-
 }

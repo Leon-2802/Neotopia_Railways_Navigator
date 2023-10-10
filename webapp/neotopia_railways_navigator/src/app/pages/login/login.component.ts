@@ -28,9 +28,16 @@ export class LoginComponent {
   public feedbackmsglogin: string = "";
   public feedbackmsgsignup: string = "";
   public success: boolean = false;
+  public selectedTab: number = 0;
 
 
   constructor(private userService: UserService, private router: Router, private mathService: MathService) { }
+
+  ngOnInit() {
+    if (localStorage.getItem('remembered_user')) {
+      this.verifyRememberedUser();
+    }
+  }
 
   public onSignup(): void {
     if (this.signupForm.controls.honeypot.dirty) {
@@ -49,7 +56,7 @@ export class LoginComponent {
         next: (res) => {
           this.feedbackmsgsignup = res.body;
           this.success = true;
-          this.forwardToLogin();
+          this.selectedTab = 1;
         },
         error: (err) => {
           this.feedbackmsgsignup = err.error;
@@ -88,9 +95,6 @@ export class LoginComponent {
     }
   }
 
-  private forwardToLogin(): void {
-  }
-
   private forwardToApp(username: string, remember: boolean): void {
     if (remember) {
       this.rememberLogin(username); // navigation happens in rememberLogin function
@@ -101,19 +105,6 @@ export class LoginComponent {
     }
   }
   private rememberLogin(username: string): void {
-    // eventuell entfernen, sobald man nur noch nach log-out auf login-path zugreifen kann--------------------------------
-    let check_data: string | null = localStorage.getItem('remembered_user');
-    if (check_data) {
-      let remeberedUser: rememberMeData = JSON.parse(check_data);
-      if (remeberedUser.username === username) {
-        // verifiy user...
-        sessionStorage.setItem('logged_user', username);
-        this.router.navigate(['']);
-        return;
-      }
-    }
-    //--------------------------------------------------------------------------------------------------------------------
-
     let verifyString: string = this.mathService.randomString(15);
     const rememberData: rememberMeData = {
       username: username,
@@ -133,6 +124,45 @@ export class LoginComponent {
         this.success = false;
       }
     });
+  }
+
+  private verifyRememberedUser() {
+    let storedData: string | null = localStorage.getItem('remembered_user');
+    if (storedData) {
+      let parsedData: rememberMeData = JSON.parse(storedData);
+      console.log(parsedData);
+
+      this.userService.verifyRememberedUser(parsedData).subscribe({
+        next: (res) => {
+          console.log(res);
+
+          let verifyString: string = this.mathService.randomString(15);
+          const newRememberData: rememberMeData = {
+            username: parsedData.username,
+            verifier: verifyString
+          }
+
+          this.userService.updateRememberedUser(newRememberData).subscribe({
+            next: (res) => {
+              console.log(res);
+              localStorage.setItem('remembered_user', JSON.stringify(newRememberData));
+              sessionStorage.setItem('logged_user', parsedData.username);
+              this.router.navigate(['']);
+            },
+            error: (err) => {
+              console.log(err);
+            }
+          });
+        },
+        error: (err) => {
+          console.log(err);
+        }
+      });
+
+    }
+    else {
+      console.log('no data in localstorage');
+    }
   }
 
 }

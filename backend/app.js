@@ -1,6 +1,10 @@
 import bcrypt from 'bcryptjs';
+import dotenv from "dotenv";
 import express from 'express';
+import jsonwebtoken from 'jsonwebtoken';
 import { createUser, deleteRemeberMeVerifier, getRemeberMeVerifier, getRememberedUsers, getTrainsScheduledTable, getUser, getUsers, storeRemeberMeVerifier, updateRemeberMeVerifier } from './database.js';
+
+dotenv.config();
 
 
 const app = express();
@@ -11,6 +15,8 @@ app.use(function (req, res, next) {
     next();
 });
 
+
+// user management ----------------------------------------------------
 app.get('/users', async (req, res) => {
     const users = await getUsers();
     res.send(users);
@@ -47,7 +53,11 @@ app.post('/login', async (req, res) => {
         return;
     }
 
-    res.status(200).send("login successful");
+    const user = { name: username };
+    const accessToken = jsonwebtoken.sign(user, process.env.ACCESS_TOKEN_SECRET);
+
+    // res.status(200).send("login successful");
+    res.json({ accessToken: accessToken });
 });
 
 app.post('/store_remember_user', async (req, res) => {
@@ -97,6 +107,13 @@ app.post('/delete_remember_user', async (req, res) => {
     await deleteRemeberMeVerifier(username);
     res.status(200).send(`verifier of user "${username}" has been deleted`);
 });
+//  -------------------------------------------------------------------
+
+// train stuff --------------------------------------------------------
+app.get('/trains_scheduled', authenticateToken, async (req, res) => {
+    const result = await getTrainsScheduledTable();
+    res.send(result);
+});
 
 app.use((err, req, res, next) => {
     console.error(err.stack)
@@ -106,3 +123,17 @@ app.use((err, req, res, next) => {
 app.listen(8080, () => {
     console.log('Server running on port 8080')
 });
+
+
+// auth functions
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) return res.sendStatus(401);
+
+    jsonwebtoken.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        req.user = user;
+        next();
+    });
+}

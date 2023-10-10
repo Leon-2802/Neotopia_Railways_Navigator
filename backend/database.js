@@ -73,3 +73,28 @@ export async function deleteRemeberMeVerifier(username) {
     `, [username]);
     return `verifier for ${username} deleted`;
 }
+
+export async function storeRefreshToken(username, token) {
+    await pool.query(`
+    INSERT INTO refresh_tokens (Username, Token)
+    VALUES (?, ?)
+    `, [username, token]);
+    return `refresh_token for ${username} stored`;
+}
+
+export async function updateRefreshToken(username, token) {
+    await pool.query(`
+    UPDATE refresh_tokens 
+    SET Token = ?
+    WHERE username = ?
+    `, [token, username]);
+    return `refresh_token for ${username} updated`;
+}
+
+export async function getRefreshToken(username) {
+    const [token] = await pool.query(`
+    SELECT Token FROM refresh_tokens
+    WHERE Username = ?
+    `, [username]);
+    return [token];
+}
