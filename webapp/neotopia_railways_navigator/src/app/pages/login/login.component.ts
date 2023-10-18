@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { rememberMeData, userdata } from 'src/app/models/user';
+import { JWTTokenService } from 'src/app/services/jwttoken.service';
 import { UserService } from 'src/app/services/user.service';
 import { MathService } from 'src/utils/common/shared/math.service';
 
@@ -31,13 +32,10 @@ export class LoginComponent {
   public selectedTab: number = 0;
 
 
-  constructor(private userService: UserService, private router: Router, private mathService: MathService) { }
+  constructor(private userService: UserService, private router: Router,
+    private jwtTokenService: JWTTokenService) { }
 
-  ngOnInit() {
-    if (localStorage.getItem('remembered_user')) {
-      this.verifyRememberedUser();
-    }
-  }
+  ngOnInit() { }
 
   public onSignup(): void {
     if (this.signupForm.controls.honeypot.dirty) {
@@ -81,13 +79,18 @@ export class LoginComponent {
       }
       let rememberMe: boolean = this.loginForm.controls.rememberMe.value;
 
-      this.userService.compareUserData(logindata).subscribe({
+      this.userService.authenticateUser(logindata).subscribe({
         next: (res) => {
-          this.feedbackmsglogin = res.body;
+          let parsedRes = JSON.parse(res.body);
           this.success = true;
+          this.jwtTokenService.storeAccessToken(parsedRes.accessToken);
+          this.jwtTokenService.storeRefreshToken(parsedRes.refreshToken);
+          this.feedbackmsglogin = parsedRes.message;
+
           this.forwardToApp(logindata.username, rememberMe);
         },
         error: (err) => {
+          console.log(err);
           this.feedbackmsglogin = err.error;
           this.success = false;
         }
@@ -96,73 +99,7 @@ export class LoginComponent {
   }
 
   private forwardToApp(username: string, remember: boolean): void {
-    if (remember) {
-      this.rememberLogin(username); // navigation happens in rememberLogin function
-    }
-    else {
-      sessionStorage.setItem('logged_user', username);
-      this.router.navigate(['']);
-    }
+    sessionStorage.setItem('logged_user', username);
+    this.router.navigate(['']);
   }
-  private rememberLogin(username: string): void {
-    let verifyString: string = this.mathService.randomString(15);
-    const rememberData: rememberMeData = {
-      username: username,
-      verifier: verifyString
-    }
-
-    this.userService.storeUserRemembered(rememberData).subscribe({
-      next: (res) => {
-        this.feedbackmsglogin = res.body;
-        this.success = true;
-        localStorage.setItem('remembered_user', JSON.stringify(rememberData));
-        sessionStorage.setItem('logged_user', username);
-        this.router.navigate(['']);
-      },
-      error: (err) => {
-        this.feedbackmsglogin = err.error;
-        this.success = false;
-      }
-    });
-  }
-
-  private verifyRememberedUser() {
-    let storedData: string | null = localStorage.getItem('remembered_user');
-    if (storedData) {
-      let parsedData: rememberMeData = JSON.parse(storedData);
-      console.log(parsedData);
-
-      this.userService.verifyRememberedUser(parsedData).subscribe({
-        next: (res) => {
-          console.log(res);
-
-          let verifyString: string = this.mathService.randomString(15);
-          const newRememberData: rememberMeData = {
-            username: parsedData.username,
-            verifier: verifyString
-          }
-
-          this.userService.updateRememberedUser(newRememberData).subscribe({
-            next: (res) => {
-              console.log(res);
-              localStorage.setItem('remembered_user', JSON.stringify(newRememberData));
-              sessionStorage.setItem('logged_user', parsedData.username);
-              this.router.navigate(['']);
-            },
-            error: (err) => {
-              console.log(err);
-            }
-          });
-        },
-        error: (err) => {
-          console.log(err);
-        }
-      });
-
-    }
-    else {
-      console.log('no data in localstorage');
-    }
-  }
-
 }

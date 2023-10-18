@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { HttpClientModule } from '@angular/common/http';
@@ -8,8 +8,10 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { authInterceptorProviders } from './auth/token.interceptor';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
+import { AuthErrorHandlerService } from './services/auth-error-handler.service';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,13 @@ import { LoginComponent } from './pages/login/login.component';
     MatTabsModule,
     MatIconModule
   ],
-  providers: [],
+  providers: [
+    authInterceptorProviders,
+    {
+      provide: ErrorHandler,
+      useClass: AuthErrorHandlerService
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

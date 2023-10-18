@@ -1,7 +1,9 @@
 import { JsonPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { rememberMeData } from 'src/app/models/user';
+import { refreshAccessTokenData, rememberMeData } from 'src/app/models/user';
+import { JWTTokenService } from 'src/app/services/jwttoken.service';
+import { TimetableService } from 'src/app/services/timetable.service';
 import { UserService } from 'src/app/services/user.service';
 import { MathService } from 'src/utils/common/shared/math.service';
 
@@ -12,35 +14,34 @@ import { MathService } from 'src/utils/common/shared/math.service';
 })
 export class HomeComponent {
 
-  public logged_user: string | null = "";
+  public loggedUser: string | null = "";
+  public lastScheduledDate: string = "";
 
-  constructor(private router: Router, private userService: UserService, private mathService: MathService) { }
+
+  constructor(private router: Router, private userService: UserService, private timetableService: TimetableService,
+    private jwtTokenService: JWTTokenService) { }
 
   ngOnInit() {
-    // check if user is already logged in
-    // this.checkLoginSession();
-    this.logged_user = sessionStorage.getItem('logged_user');
+    this.loggedUser = sessionStorage.getItem('logged_user');
   }
 
   public onLogOut() {
     sessionStorage.removeItem('logged_user');
-
-    let storedData: string | null = localStorage.getItem('remembered_user');
-    if (storedData) {
-      //remove rememberMe data from db and localstorage
-      let parsedData: rememberMeData = JSON.parse(storedData);
-      this.userService.deleteRememberedUserData(parsedData).subscribe({
-        next: (res) => {
-          console.log(res);
-          localStorage.removeItem('remembered_user');
-        },
-        error: (err) => {
-          console.log(err);
-          return;
-        }
-      });
-    }
+    this.jwtTokenService.logOut();
 
     this.router.navigate(['/login']);
+  }
+
+  public getLastTrainScheduleDate(): void {
+    this.timetableService.getIfTrainsScheduled().subscribe({
+      next: (res) => {
+        console.log("it worked!");
+        let lastDate: Date = res.LastDate;
+        this.lastScheduledDate = lastDate.toString();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
   }
 }

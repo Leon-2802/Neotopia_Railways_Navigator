@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import dotenv from "dotenv";
 import express from 'express';
 import jsonwebtoken from 'jsonwebtoken';
-import { createUser, deleteRemeberMeVerifier, getRefreshToken, getRemeberMeVerifier, getRememberedUsers, getUser, getUsers, storeRefreshToken, storeRemeberMeVerifier, updateRefreshToken, updateRemeberMeVerifier } from './database.js';
+import { getUser } from './database.js';
 
 dotenv.config();
 
@@ -10,16 +10,8 @@ const app = express();
 app.use(express.json());
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*"); // wildcard origin - probably not safe to use?
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Origin");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Authorization");
     next();
-});
-
-
-app.post('/signup', async (req, res) => {
-    const { username, password } = req.body; // grab user data from http request
-    const hash = await bcrypt.hash(password, 13);
-    await createUser(username, hash);
-    res.status(201).send(`user "${username}" successfully created`); // 201 = successfully created
 });
 
 app.post('/login', async (req, res) => {
@@ -38,46 +30,33 @@ app.post('/login', async (req, res) => {
     const user = { name: username };
     const accessToken = generateAccessToken(user);
     const refreshToken = jsonwebtoken.sign(user, process.env.REFRESH_TOKEN_SECRET);
-    // store refresh token in db
-    if (await getRefreshToken(username)) {
-        await updateRefreshToken(username, refreshToken);
-        console.log("updated refresh token");
-    } else {
-        await storeRefreshToken(username, refreshToken);
-    }
 
-    // res.status(200).send("login successful");
-    res.json({ accessToken: accessToken, refreshToken: refreshToken });
+    res.json({ accessToken: accessToken, refreshToken: refreshToken, message: 'login successful' });
 });
 
 app.post('/token', async (req, res) => {
     const { username, refreshToken } = req.body;
     if (username == null || refreshToken == null) return res.sendStatus(401);
-    const dbRefreshToken = await getRefreshToken(username);
-    if (dbRefreshToken == null) return res.sendStatus(403);
     jsonwebtoken.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
         if (err) return res.sendStatus(403);
-        const accessToken = generateAccessToken(user);
+        const accessToken = generateAccessToken({ name: user.name });
         res.json({ accessToken: accessToken });
     });
 });
 
+app.post('/authorize', async (req, res) => {
+    const authHeader = req.headers['authorization'];
+    const accessToken = authHeader && authHeader.split(' ')[1];
+    if (accessToken == null) return res.sendStatus(401);
+
+    jsonwebtoken.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if (err) return res.sendStatus(403);
+        res.sendStatus(204);
+    });
+});
 
 function generateAccessToken(user) {
     return jsonwebtoken.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' });
-}
-
-
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token == null) return res.sendStatus(401);
-
-    jsonwebtoken.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
 }
 
 app.listen(8081, () => {

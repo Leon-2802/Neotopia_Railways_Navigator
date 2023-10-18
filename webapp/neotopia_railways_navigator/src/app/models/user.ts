@@ -7,3 +7,8 @@ export interface rememberMeData {
     username: string;
     verifier: string;
 }
+
+export interface refreshAccessTokenData {
+    username: string;
+    refreshToken: string;
+};

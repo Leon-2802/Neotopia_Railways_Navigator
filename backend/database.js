@@ -10,11 +10,8 @@ const pool = mysql.createPool({  // creates pool of connections
 }).promise(); // allows to use async methods with promises over callbacks (?)
 
 
-export async function getTrainsScheduledTable() {
-    const [rows] = await pool.query("SELECT * FROM trains_scheduled");
-    return rows;
-}
 
+// user-management ----------------------------------------------------------------
 export async function getUsers() {
     const [result] = await pool.query("SELECT * FROM users");
     return result;
@@ -28,11 +25,6 @@ export async function getUser(username) {
     return rows[0]; // cleaner result without the array stuff around it
 }
 
-export async function getRememberedUsers() {
-    const [result] = await pool.query("SELECT * FROM remember_users");
-    return result;
-}
-
 export async function createUser(username, password) {
     await pool.query(`
     INSERT INTO users (Username,Password)
@@ -41,60 +33,16 @@ export async function createUser(username, password) {
     return getUser(username);
 }
 
-export async function storeRemeberMeVerifier(username, verifier) {
+export async function deleteUser(username) {
     await pool.query(`
-    INSERT INTO remember_users (username,verifier)
-    VALUES (?, ?)
-    `, [username, verifier]);
-    return getRemeberMeVerifier(username);
-}
-
-export async function getRemeberMeVerifier(username) {
-    const [rows] = await pool.query(`
-    SELECT * FROM remember_users
+    DELETE FROM users 
     WHERE username = ?
     `, [username]);
-    return rows[0];
 }
+// -----------------------------------------------------------------------------
 
-export async function updateRemeberMeVerifier(username, verifier) {
-    await pool.query(`
-    UPDATE remember_users 
-    SET verifier = ?
-    WHERE username = ?
-    `, [verifier, username]);
-    return getRemeberMeVerifier(username);
-}
 
-export async function deleteRemeberMeVerifier(username) {
-    await pool.query(`
-    DELETE FROM remember_users
-    WHERE username = ?
-    `, [username]);
-    return `verifier for ${username} deleted`;
-}
-
-export async function storeRefreshToken(username, token) {
-    await pool.query(`
-    INSERT INTO refresh_tokens (Username, Token)
-    VALUES (?, ?)
-    `, [username, token]);
-    return `refresh_token for ${username} stored`;
-}
-
-export async function updateRefreshToken(username, token) {
-    await pool.query(`
-    UPDATE refresh_tokens 
-    SET Token = ?
-    WHERE username = ?
-    `, [token, username]);
-    return `refresh_token for ${username} updated`;
-}
-
-export async function getRefreshToken(username) {
-    const [token] = await pool.query(`
-    SELECT Token FROM refresh_tokens
-    WHERE Username = ?
-    `, [username]);
-    return [token];
+export async function getTrainsScheduledTable() {
+    const [rows] = await pool.query("SELECT * FROM trains_scheduled");
+    return rows;
 }
