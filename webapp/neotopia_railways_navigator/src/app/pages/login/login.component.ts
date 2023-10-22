@@ -1,11 +1,8 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { rememberMeData, userdata } from 'src/app/models/user';
-import { JwtTokenService } from 'src/app/services/jwt-token.service';
 import { UserService } from 'src/app/services/user.service';
-import { MathService } from 'src/utils/common/shared/math.service';
 
 @Component({
   selector: 'app-login',
@@ -32,8 +29,7 @@ export class LoginComponent {
   public selectedTab: number = 0;
 
 
-  constructor(private userService: UserService, private router: Router,
-    private jwtTokenService: JwtTokenService) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   ngOnInit() { }
 
