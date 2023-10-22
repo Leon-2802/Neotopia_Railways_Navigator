@@ -3,13 +3,13 @@ import { Injectable, inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from "@angular/router";
 import { Observable, catchError } from "rxjs";
 import { refreshAccessTokenData, rememberMeData, userdata } from "../models/user";
-import { JWTTokenService } from "./jwttoken.service";
+import { JwtTokenService } from "./jwt-token.service";
 
 
 @Injectable({ providedIn: "root" })
 export class UserService {
 
-    constructor(private http: HttpClient, private router: Router, private jwtTokenService: JWTTokenService) { }
+    constructor(private http: HttpClient, private router: Router, private jwtTokenService: JwtTokenService) { }
 
     public createUser(user: userdata): Observable<any> {
         let headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*'); // cors stuff nochmal durchlesen

@@ -1,12 +1,12 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { JWTTokenService } from "./jwttoken.service";
+import { JwtTokenService } from "./jwt-token.service";
 
 @Injectable({ providedIn: 'root' })
 export class TimetableService {
 
-    constructor(private http: HttpClient, private jwtTokenService: JWTTokenService) { }
+    constructor(private http: HttpClient, private jwtTokenService: JwtTokenService) { }
 
 
     public getIfTrainsScheduled(): Observable<any> {

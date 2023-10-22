@@ -32,6 +32,6 @@
 
 
 ### Backlog:
-- RxJS genau anschauen: https://www.youtube.com/watch?v=tGWBy6Vqq9w
+- RxJS genau anschauen: https://www.youtube.com/watch?v=tGWBy6Vqq9w (13:41)
 - Learn about SSL encryption, so data can be safely transferred through https(!) requests
 - Learn about OpenID Connect and other auth frameworks

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { rememberMeData, userdata } from 'src/app/models/user';
-import { JWTTokenService } from 'src/app/services/jwttoken.service';
+import { JwtTokenService } from 'src/app/services/jwt-token.service';
 import { UserService } from 'src/app/services/user.service';
 import { MathService } from 'src/utils/common/shared/math.service';
 
@@ -33,7 +33,7 @@ export class LoginComponent {
 
 
   constructor(private userService: UserService, private router: Router,
-    private jwtTokenService: JWTTokenService) { }
+    private jwtTokenService: JwtTokenService) { }
 
   ngOnInit() { }
 

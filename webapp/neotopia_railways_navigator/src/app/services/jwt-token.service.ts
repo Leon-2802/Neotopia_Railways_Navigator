@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { refreshAccessTokenData } from '../models/user';
 
 const ACCESSTOKEN_KEY = 'auth-access-token';
@@ -9,7 +9,7 @@ const REFRESHTOKEN_KEY: string = 'auth-refreshtoken';
 @Injectable({
   providedIn: 'root'
 })
-export class JWTTokenService {
+export class JwtTokenService {
 
   constructor(private http: HttpClient) { }
 

@@ -9,7 +9,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, filter, switchMap, take, throwError } from 'rxjs';
 import { refreshAccessTokenData } from '../models/user';
-import { JWTTokenService } from '../services/jwttoken.service';
+import { JwtTokenService } from '../services/jwt-token.service';
+
 
 const TOKEN_HEADER_KEY = 'Authorization';
 
@@ -21,7 +22,7 @@ export class TokenInterceptor implements HttpInterceptor {
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
 
-  constructor(private jwtTokenService: JWTTokenService, private router: Router) { }
+  constructor(private jwtTokenService: JwtTokenService, private router: Router) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler) {
     let authReq: HttpRequest<any> = request;

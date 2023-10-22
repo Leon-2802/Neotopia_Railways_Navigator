@@ -2,7 +2,7 @@ import { JsonPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { refreshAccessTokenData, rememberMeData } from 'src/app/models/user';
-import { JWTTokenService } from 'src/app/services/jwttoken.service';
+import { JwtTokenService } from 'src/app/services/jwt-token.service';
 import { TimetableService } from 'src/app/services/timetable.service';
 import { UserService } from 'src/app/services/user.service';
 import { MathService } from 'src/utils/common/shared/math.service';
@@ -19,7 +19,7 @@ export class HomeComponent {
 
 
   constructor(private router: Router, private userService: UserService, private timetableService: TimetableService,
-    private jwtTokenService: JWTTokenService) { }
+    private jwtTokenService: JwtTokenService) { }
 
   ngOnInit() {
     this.loggedUser = sessionStorage.getItem('logged_user');
