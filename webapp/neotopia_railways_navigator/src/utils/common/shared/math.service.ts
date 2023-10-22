@@ -14,4 +14,13 @@ export class MathService {
         }
         return result;
     }
+
+    public getDate24HoursLater(): Date {
+        return new Date(new Date().getTime() + (24 * 60 * 60 * 1000));
+    }
+    public getDate2MonthsLater(): Date {
+        let result: Date = new Date();
+        result.setMonth(result.getMonth() + 2);
+        return result;
+    }
 }

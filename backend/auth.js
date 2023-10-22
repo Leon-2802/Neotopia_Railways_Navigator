@@ -31,7 +31,8 @@ app.post('/login', async (req, res) => {
     const accessToken = generateAccessToken(user);
     const refreshToken = jsonwebtoken.sign(user, process.env.REFRESH_TOKEN_SECRET);
 
-    res.json({ accessToken: accessToken, refreshToken: refreshToken, message: 'login successful' });
+    res.status(200).cookie("access_token", accessToken, { httpOnly: true }).cookie("refresh_token", refreshToken, { httpOnly: true })
+        .json({ message: 'login successful' });
 });
 
 app.post('/token', async (req, res) => {
@@ -40,7 +41,8 @@ app.post('/token', async (req, res) => {
     jsonwebtoken.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
         if (err) return res.sendStatus(403);
         const accessToken = generateAccessToken({ name: user.name });
-        res.json({ accessToken: accessToken });
+        res.cookie("access_token", accessToken, { httpOnly: true })
+            .json({ message: 'access token successfuly updated' });
     });
 });
 

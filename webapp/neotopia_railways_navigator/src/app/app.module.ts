@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserModule } from '@angular/platform-browser';
+import { CookieService } from 'ngx-cookie-service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { authInterceptorProviders } from './auth/token.interceptor';
@@ -33,7 +34,8 @@ import { AuthErrorHandlerService } from './services/auth-error-handler.service';
     {
       provide: ErrorHandler,
       useClass: AuthErrorHandlerService
-    }
+    },
+    CookieService
   ],
   bootstrap: [AppComponent]
 })

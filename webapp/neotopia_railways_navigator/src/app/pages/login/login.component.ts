@@ -83,8 +83,6 @@ export class LoginComponent {
         next: (res) => {
           let parsedRes = JSON.parse(res.body);
           this.success = true;
-          this.jwtTokenService.storeAccessToken(parsedRes.accessToken);
-          this.jwtTokenService.storeRefreshToken(parsedRes.refreshToken);
           this.feedbackmsglogin = parsedRes.message;
 
           this.forwardToApp(logindata.username, rememberMe);
