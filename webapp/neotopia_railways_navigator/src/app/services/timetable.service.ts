@@ -10,7 +10,7 @@ export class TimetableService {
 
 
     public getIfTrainsScheduled(): Observable<any> {
-        const headers = new HttpHeaders({ 'Access-Control-Allow-Origin': '*' });
+        const headers = new HttpHeaders({ 'Access-Control-Allow-Origin': 'http://localhost:4200' });
         return this.http.get(
             'http://localhost:8080/trains_scheduled', { headers: headers, responseType: 'json' });
     }

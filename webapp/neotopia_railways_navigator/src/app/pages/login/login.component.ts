@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { rememberMeData, userdata } from 'src/app/models/user';
+import { loginData, userdata } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -69,9 +69,10 @@ export class LoginComponent {
 
     if (this.loginForm.controls.username.value && this.loginForm.controls.password.value
       && this.loginForm.controls.rememberMe.value != null) {
-      let logindata: userdata = {
+      let logindata: loginData = {
         username: this.loginForm.controls.username.value,
-        password: this.loginForm.controls.password.value
+        password: this.loginForm.controls.password.value,
+        remember: this.loginForm.controls.rememberMe.value
       }
       let rememberMe: boolean = this.loginForm.controls.rememberMe.value;
 

@@ -3,6 +3,12 @@ export interface userdata {
     password: string;
 }
 
+export interface loginData {
+    username: string;
+    password: string;
+    remember: boolean;
+}
+
 export interface rememberMeData {
     username: string;
     verifier: string;

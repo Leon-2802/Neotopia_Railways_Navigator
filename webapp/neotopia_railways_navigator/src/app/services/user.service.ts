@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from "@angular/router";
-import { Observable, catchError } from "rxjs";
-import { refreshAccessTokenData, rememberMeData, userdata } from "../models/user";
+import { Observable } from "rxjs";
+import { loginData, userdata } from "../models/user";
 import { JwtTokenService } from "./jwt-token.service";
 
 
@@ -12,14 +12,14 @@ export class UserService {
     constructor(private http: HttpClient, private router: Router, private jwtTokenService: JwtTokenService) { }
 
     public createUser(user: userdata): Observable<any> {
-        let headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*'); // cors stuff nochmal durchlesen
+        let headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200'); // cors stuff nochmal durchlesen
         return this.http.post(
             'http://localhost:8080/signup',
             user, { headers: headers, observe: 'response', responseType: 'text' });
     }
 
-    public authenticateUser(user: userdata): Observable<any> {
-        let headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*'); // cors stuff nochmal durchlesen
+    public authenticateUser(user: loginData): Observable<any> {
+        let headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200');
         return this.http.post(
             'http://localhost:8081/login',
             user, { headers: headers, observe: 'response', responseType: 'text' });
@@ -30,15 +30,16 @@ export class UserService {
             `http://localhost:8080/users/${username}`, { responseType: 'json' });
     }
 
-    public logOut(logOutData: refreshAccessTokenData) {
-        let headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*');
+    public logOut() {
+        sessionStorage.removeItem('logged_user');
+        let headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200');
         return this.http.post(
             'http://localhost:8081/logout',
-            logOutData, { headers: headers, observe: 'response', responseType: 'text' });
+            { headers: headers, observe: 'response', responseType: 'json' });
     }
 
     public deleteUser(username: string) {
-        let headers = new HttpHeaders().set('Access-Control-Allow-Origin', '*');
+        let headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200');
         return this.http.post(
             'http://localhost:8080/delete_user',
             username, { headers: headers, observe: 'response', responseType: 'text' });

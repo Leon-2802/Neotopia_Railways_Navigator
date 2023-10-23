@@ -6,7 +6,6 @@
                 <input id="password" type="password" placeholder="password" formControlName="password">
                 <input id="honeypot-00" class="honeypot" type="text" formArrayName="honeypot">
                 <button id="signup" type="submit" [disabled]="!signupForm.valid">Sign up</button>
-                <!-- <button id="login">Login</button> -->
                 <p id="feedback-message-signup" [ngClass]="success ? 'success-message' : 'error-message'">
                     {{feedbackmsgsignup}}</p>
             </form>
@@ -20,8 +19,7 @@
                     <label for="rememberUser">Remember Login</label>
                 </div>
                 <input id="honeypot-01" class="honeypot" type="text" formControlName="honeypot">
-                <button id="signup" type="submit" [disabled]="!loginForm.valid">Login</button>
-                <!-- <button id="login">Login</button> -->
+                <button id="login" type="submit" [disabled]="!loginForm.valid">Login</button>
                 <p id="feedback-message-login" [ngClass]="success ? 'success-message' : 'error-message'">
                     {{feedbackmsglogin}}</p>
             </form>

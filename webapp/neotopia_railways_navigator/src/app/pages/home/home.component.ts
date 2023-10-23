@@ -1,11 +1,8 @@
-import { JsonPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { refreshAccessTokenData, rememberMeData } from 'src/app/models/user';
 import { JwtTokenService } from 'src/app/services/jwt-token.service';
 import { TimetableService } from 'src/app/services/timetable.service';
 import { UserService } from 'src/app/services/user.service';
-import { MathService } from 'src/utils/common/shared/math.service';
 
 @Component({
   selector: 'app-home',
@@ -26,8 +23,14 @@ export class HomeComponent {
   }
 
   public onLogOut() {
-    sessionStorage.removeItem('logged_user');
-    this.jwtTokenService.logOut();
+    this.userService.logOut().subscribe({
+      next: (res) => {
+        console.log('logged out');
+      },
+      error: (err) => {
+        console.error(err.message);
+      }
+    })
 
     this.router.navigate(['/login']);
   }

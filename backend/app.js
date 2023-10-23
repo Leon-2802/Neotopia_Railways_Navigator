@@ -1,19 +1,25 @@
 import bcrypt from 'bcryptjs';
+import cookieParser from 'cookie-parser';
 import dotenv from "dotenv";
 import express from 'express';
 import jsonwebtoken from 'jsonwebtoken';
+import { createRequire } from "module";
 import { deleteUser, getTrainsScheduledTable, getUser, getUsers } from './database.js';
 
 dotenv.config();
+const require = createRequire(import.meta.url);
+const cors = require('cors');
 
 
 const app = express();
 app.use(express.json());
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*"); // wildcard origin - probably not safe to use?
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Origin, Authorization");
-    next();
-});
+app.use(cookieParser());
+app.use(
+    cors({
+        origin: 'http://localhost:4200',
+        credentials: true
+    })
+);
 
 
 // user management ----------------------------------------------------

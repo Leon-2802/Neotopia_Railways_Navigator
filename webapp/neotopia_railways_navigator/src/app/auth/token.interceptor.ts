@@ -8,8 +8,8 @@ import {
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, filter, switchMap, take, throwError } from 'rxjs';
-import { refreshAccessTokenData } from '../models/user';
 import { JwtTokenService } from '../services/jwt-token.service';
+import { UserService } from '../services/user.service';
 
 
 const TOKEN_HEADER_KEY = 'Authorization';
@@ -22,21 +22,20 @@ export class TokenInterceptor implements HttpInterceptor {
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
 
-  constructor(private jwtTokenService: JwtTokenService, private router: Router) { }
+  constructor(private jwtTokenService: JwtTokenService, private userService: UserService, private router: Router) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler) {
-    let authReq: HttpRequest<any> = request;
-    const token: string | null = this.jwtTokenService.getAccessToken();
-    if (token != null) {
-      authReq = this.addTokenHeader(request, token);
-    }
+    let req: HttpRequest<any> = request;
+    req = req.clone({
+      withCredentials: true
+    });
 
-    return next.handle(authReq).pipe(catchError(error => {
-      if (error instanceof HttpErrorResponse && !authReq.url.includes('/signup') && !authReq.url.includes('/login') && error.status === 403) {
-        return this.handle403Error(authReq, next);
+    return next.handle(req).pipe(catchError(error => {
+      if (error instanceof HttpErrorResponse && !req.url.includes('/signup') && !req.url.includes('/login') && error.status === 403) {
+        return this.handle403Error(req, next);
       }
-      else if (error instanceof HttpErrorResponse && !authReq.url.includes('/signup') && !authReq.url.includes('/login') && error.status === 401) {
-        return this.handle401Error(authReq, next);
+      else if (error instanceof HttpErrorResponse && !req.url.includes('/signup') && !req.url.includes('/login') && error.status === 401) {
+        return this.handle401Error(req, next);
       }
 
       return throwError(() => new Error(error));
@@ -48,58 +47,54 @@ export class TokenInterceptor implements HttpInterceptor {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);
 
-      const token: string | null = this.jwtTokenService.getRefreshToken();
-      const username: string | null = sessionStorage.getItem('logged_user')
+      return this.jwtTokenService.refreshToken().pipe(
+        switchMap((res) => {
+          this.isRefreshing = false;
+          console.log(res.message);
 
-      if (token && username) {
-        const resfreshData: refreshAccessTokenData = {
-          username: username,
-          refreshToken: token
-        }
-        return this.jwtTokenService.refreshToken(resfreshData).pipe(
-          switchMap((res) => {
-            this.isRefreshing = false;
-            console.log(res);
+          return next.handle(this.resendRequest(request));
+        }),
+        catchError((err) => {
+          this.isRefreshing = false;
 
-            this.jwtTokenService.storeAccessToken(res.body.accessToken);
-            this.refreshTokenSubject.next(res.body.accessToken);
+          this.userService.logOut().subscribe({
+            next: (res) => {
+              console.log('logged out');
+            },
+            error: (err) => {
+              console.error(err.message);
+            }
+          });
 
-            return next.handle(this.addTokenHeader(request, res.body.accessToken));
-          }),
-          catchError((err) => {
-            this.isRefreshing = false;
-
-            this.jwtTokenService.logOut();
-            this.router.navigate(['/login']);
-
-            return throwError(() => new Error(err.message));
-          })
-        );
-      }
+          this.router.navigate(['/login']);
+          return throwError(() => new Error(err.message));
+        })
+      );
     }
 
     return this.refreshTokenSubject.pipe( //? what is this ?
       filter(token => token !== null),
       take(1),
-      switchMap((token) => next.handle(this.addTokenHeader(request, token)))
+      switchMap((token) => next.handle(this.resendRequest(request)))
     );
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<any> {
-    // kick user off current page to login-page, if no tokens are available
-    const accessToken: string | null = this.jwtTokenService.getAccessToken();
-    const refreshToken: string | null = this.jwtTokenService.getRefreshToken();
+    this.userService.logOut().subscribe({
+      next: (res) => {
+        console.log('logged out');
+      },
+      error: (err) => {
+        console.error(err.message);
+      }
+    });
 
-    if (accessToken == null || refreshToken == null) {
-      this.jwtTokenService.logOut();
-      this.router.navigate(['/login']);
-    }
-
+    this.router.navigate(['/login']);
     return throwError(() => new Error('No jwt token present'));
   }
 
-  private addTokenHeader(request: HttpRequest<any>, token: string): HttpRequest<any> {
-    return request.clone({ headers: request.headers.set(TOKEN_HEADER_KEY, 'Bearer ' + token) });
+  private resendRequest(request: HttpRequest<any>): HttpRequest<any> {
+    return request.clone();
   }
 }
 
