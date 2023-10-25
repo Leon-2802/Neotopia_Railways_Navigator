@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import express from 'express';
 import jsonwebtoken from 'jsonwebtoken';
 import { createRequire } from "module";
-import { deleteUser, getTrainsScheduledTable, getUser, getUsers } from './database.js';
+import { createUser, deleteUser, getTrainsScheduledTable, getUser, getUsers, setTrainsScheduled } from './database.js';
 
 dotenv.config();
 const require = createRequire(import.meta.url);
@@ -30,21 +30,27 @@ app.get('/users', async (req, res) => {
 
 app.get('/users/:username', async (req, res) => {
     const username = req.params.username;
-    const user = await getUser(username);
-    res.send(user);
-});
-
-app.post('/signup', async (req, res) => {
-    const { username, password } = req.body; // grab user data from http request
-    const hash = await bcrypt.hash(password, 13);
-    await createUser(username, hash);
-    res.status(201).send(`user "${username}" successfully created`); // 201 = successfully created
+    try {
+        const user = await getUser(username);
+        res.send(user);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send(`user ${username} not found`);
+    }
 });
 
 app.post('/delete_user', authenticateToken, async (req, res) => {
     const { username } = req.body;
-    await deleteUser(username);
-    res.status(204).send(`user "${username}" deleted`);
+    try {
+        await getUser(username);
+        await deleteUser(username);
+        res.status(204).send(`user "${username}" deleted`);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send(`user: "${username}" doesn't exist`);
+    }
 });
 //  -------------------------------------------------------------------
 
@@ -52,6 +58,17 @@ app.post('/delete_user', authenticateToken, async (req, res) => {
 app.get('/trains_scheduled', authenticateToken, async (req, res) => {
     const [result] = await getTrainsScheduledTable();
     res.send(result);
+});
+app.post('/set_trains_scheduled', authenticateToken, async (req, res) => {
+    const { date } = req.body;
+    try {
+        await setTrainsScheduled(date);
+        res.status(200).send(`date successfully updated to ${date}`);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send(error.sqlMessage);
+    }
 });
 //  -------------------------------------------------------------------
 

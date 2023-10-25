@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { loginData, userdata } from 'src/app/models/user';
+import { LoginDataDto, UserDataDto } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -13,6 +13,7 @@ export class LoginComponent {
 
   public signupForm = new FormGroup({
     username: new FormControl<string>('', Validators.compose([Validators.required, Validators.minLength(8), Validators.maxLength(30)])),
+    email: new FormControl<string>('', Validators.compose([Validators.required, Validators.email])),
     password: new FormControl<string>('', Validators.compose([Validators.required, Validators.minLength(8), Validators.maxLength(50)])),
     honeypot: new FormControl<string>('', Validators.maxLength(0))
   });
@@ -40,20 +41,21 @@ export class LoginComponent {
       return;
     }
 
-    if (this.signupForm.controls.username.value && this.signupForm.controls.password.value) {
-      let newUser: userdata = {
-        username: this.signupForm.controls.username.value,
-        password: this.signupForm.controls.password.value
-      }
+    if (this.signupForm.controls.username.value && this.signupForm.controls.email.value && this.signupForm.controls.password.value) {
+      let newUser: UserDataDto = new UserDataDto(this.signupForm.controls.username.value,
+        this.signupForm.controls.email.value, this.signupForm.controls.password.value);
 
       this.userService.createUser(newUser).subscribe({
         next: (res) => {
           this.feedbackmsgsignup = res.body;
           this.success = true;
-          this.selectedTab = 1;
+          setTimeout(() => {
+            this.selectedTab = 1;
+          }, 200);
         },
         error: (err) => {
-          this.feedbackmsgsignup = err.error;
+          if (err.message)
+            this.feedbackmsgsignup = err.message;
           this.success = false;
         }
       });
@@ -69,12 +71,11 @@ export class LoginComponent {
 
     if (this.loginForm.controls.username.value && this.loginForm.controls.password.value
       && this.loginForm.controls.rememberMe.value != null) {
-      let logindata: loginData = {
-        username: this.loginForm.controls.username.value,
-        password: this.loginForm.controls.password.value,
-        remember: this.loginForm.controls.rememberMe.value
-      }
-      let rememberMe: boolean = this.loginForm.controls.rememberMe.value;
+      let logindata: LoginDataDto = new LoginDataDto(
+        this.loginForm.controls.username.value,
+        this.loginForm.controls.password.value,
+        this.loginForm.controls.rememberMe.value
+      );
 
       this.userService.authenticateUser(logindata).subscribe({
         next: (res) => {
@@ -82,18 +83,18 @@ export class LoginComponent {
           this.success = true;
           this.feedbackmsglogin = parsedRes.message;
 
-          this.forwardToApp(logindata.username, rememberMe);
+          this.forwardToApp(logindata.username);
         },
         error: (err) => {
-          console.log(err);
-          this.feedbackmsglogin = err.error;
+          if (err.message)
+            this.feedbackmsglogin = err.message;
           this.success = false;
         }
       });
     }
   }
 
-  private forwardToApp(username: string, remember: boolean): void {
+  private forwardToApp(username: string): void {
     sessionStorage.setItem('logged_user', username);
     this.router.navigate(['']);
   }

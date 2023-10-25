@@ -2,9 +2,10 @@
     <mat-tab-group id="tab-group" [selectedIndex]="selectedTab">
         <mat-tab label="Create user">
             <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
-                <input id="username" type="text" placeholder="username" formControlName="username">
-                <input id="password" type="password" placeholder="password" formControlName="password">
-                <input id="honeypot-00" class="honeypot" type="text" formArrayName="honeypot">
+                <input id="username" type="text" placeholder="Username" formControlName="username">
+                <input id="email" type="text" placeholder="Email" formControlName="email">
+                <input id="password" type="password" placeholder="Password" formControlName="password">
+                <input id="honeypot-00" class="honeypot" type="text" formControlName="honeypot">
                 <button id="signup" type="submit" [disabled]="!signupForm.valid">Sign up</button>
                 <p id="feedback-message-signup" [ngClass]="success ? 'success-message' : 'error-message'">
                     {{feedbackmsgsignup}}</p>
@@ -12,8 +13,8 @@
         </mat-tab>
         <mat-tab label="Login">
             <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-                <input id="username" type="text" placeholder="username" formControlName="username">
-                <input id="password" type="password" placeholder="password" formControlName="password">
+                <input id="username" type="text" placeholder="Username" formControlName="username">
+                <input id="password" type="password" placeholder="Password" formControlName="password">
                 <div id="rememberMe">
                     <input name="rememberUser" type="checkbox" formControlName="rememberMe">
                     <label for="rememberUser">Remember Login</label>

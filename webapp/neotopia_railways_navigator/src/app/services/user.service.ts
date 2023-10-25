@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from "@angular/router";
 import { Observable } from "rxjs";
-import { loginData, userdata } from "../models/user";
+import { DeleteDataDto, LoginDataDto, UserDataDto } from "../models/user";
 import { JwtTokenService } from "./jwt-token.service";
 
 
@@ -11,14 +11,14 @@ export class UserService {
 
     constructor(private http: HttpClient, private router: Router, private jwtTokenService: JwtTokenService) { }
 
-    public createUser(user: userdata): Observable<any> {
+    public createUser(user: UserDataDto): Observable<any> {
         let headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200'); // cors stuff nochmal durchlesen
         return this.http.post(
-            'http://localhost:8080/signup',
+            'http://localhost:8081/signup',
             user, { headers: headers, observe: 'response', responseType: 'text' });
     }
 
-    public authenticateUser(user: loginData): Observable<any> {
+    public authenticateUser(user: LoginDataDto): Observable<any> {
         let headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200');
         return this.http.post(
             'http://localhost:8081/login',
@@ -26,7 +26,7 @@ export class UserService {
     }
 
     public fetchUser(username: string) {
-        return this.http.get<{ user: userdata }>(
+        return this.http.get<{ user: UserDataDto }>(
             `http://localhost:8080/users/${username}`, { responseType: 'json' });
     }
 
@@ -39,10 +39,11 @@ export class UserService {
     }
 
     public deleteUser(username: string) {
+        const deleteData: DeleteDataDto = new DeleteDataDto(username);
         let headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200');
         return this.http.post(
             'http://localhost:8080/delete_user',
-            username, { headers: headers, observe: 'response', responseType: 'text' });
+            deleteData, { headers: headers, observe: 'response', responseType: 'text' });
     }
 
     public async canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {

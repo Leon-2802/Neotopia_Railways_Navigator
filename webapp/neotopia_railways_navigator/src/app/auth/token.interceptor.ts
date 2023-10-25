@@ -38,7 +38,7 @@ export class TokenInterceptor implements HttpInterceptor {
         return this.handle401Error(req, next);
       }
 
-      return throwError(() => new Error(error));
+      return throwError(() => new Error(error.error));
     }));
   }
 

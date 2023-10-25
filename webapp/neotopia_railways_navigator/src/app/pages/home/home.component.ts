@@ -15,8 +15,7 @@ export class HomeComponent {
   public lastScheduledDate: string = "";
 
 
-  constructor(private router: Router, private userService: UserService, private timetableService: TimetableService,
-    private jwtTokenService: JwtTokenService) { }
+  constructor(private router: Router, private userService: UserService, private timetableService: TimetableService) { }
 
   ngOnInit() {
     this.loggedUser = sessionStorage.getItem('logged_user');
@@ -38,9 +37,20 @@ export class HomeComponent {
   public getLastTrainScheduleDate(): void {
     this.timetableService.getIfTrainsScheduled().subscribe({
       next: (res) => {
-        console.log("it worked!");
         let lastDate: Date = res.LastDate;
-        this.lastScheduledDate = lastDate.toString();
+        this.lastScheduledDate = "Trains last scheduled at: " + lastDate.toString();
+        // this.updateLastScheduledDate();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+  public updateLastScheduledDate(): void {
+    this.timetableService.updateTrainsScheduled().subscribe({
+      next: (res) => {
+        console.log(res);
       },
       error: (err) => {
         console.error(err);
