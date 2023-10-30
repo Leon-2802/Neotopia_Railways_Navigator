@@ -21,7 +21,7 @@ export class LoginDataDto {
     }
 }
 
-export class DeleteDataDto {
+export class UsernameDto {
     public username: string;
 
     constructor(username: string) {

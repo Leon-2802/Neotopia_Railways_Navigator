@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from "@angular/router";
 import { Observable } from "rxjs";
-import { DeleteDataDto, LoginDataDto, UserDataDto } from "../models/user";
+import { LoginDataDto, UserDataDto, UsernameDto } from "../models/user";
 import { JwtTokenService } from "./jwt-token.service";
 
 
@@ -38,7 +38,7 @@ export class UserService {
             { headers: headers, observe: 'response', responseType: 'json' });
     }
 
-    public deleteUser(deleteData: DeleteDataDto): Observable<any> {
+    public deleteUser(deleteData: UsernameDto): Observable<any> {
         let headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200');
         return this.http.post(
             'http://localhost:8080/delete_user',

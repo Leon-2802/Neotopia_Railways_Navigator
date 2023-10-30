@@ -1,10 +1,9 @@
-import bcrypt from 'bcryptjs';
 import cookieParser from 'cookie-parser';
 import dotenv from "dotenv";
 import express from 'express';
 import jsonwebtoken from 'jsonwebtoken';
 import { createRequire } from "module";
-import { createUser, deleteUser, getTrainsScheduledTable, getUser, getUsers, setTrainsScheduled } from './database.js';
+import { deleteUser, getTrainsScheduledTable, getUser, getUsers, setTrainsScheduled } from './database.js';
 
 dotenv.config();
 const require = createRequire(import.meta.url);

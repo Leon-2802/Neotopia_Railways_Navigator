@@ -62,6 +62,35 @@ app.post('/signup', async (req, res) => {
     }
 });
 
+app.post('/resend_confirmation_mail', async (req, res) => {
+    const { username } = req.body;
+    try {
+        const userData = await getUser(username);
+        const user = { name: username };
+        jsonwebtoken.sign(
+            user,
+            process.env.EMAIL_TOKEN_SECRET,
+            {
+                expiresIn: '1d',
+            },
+            (err, emailToken) => {
+                const url = `http://localhost:8081/confirmation/${emailToken}`;
+
+                transporter.sendMail({
+                    to: userData.email,
+                    subject: "Confirmation Email",
+                    html: `Please click this link to confirm your email: <a href="${url}">${url}</a>`
+                })
+            },
+        );
+        res.status(200).send(`mail successfuly resent for user: ${username}`);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).send(error.sqlMessage);
+    }
+});
+
 app.get('/confirmation/:token', async (req, res) => {
     try {
         let username;
