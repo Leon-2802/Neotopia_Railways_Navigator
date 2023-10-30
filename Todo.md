@@ -1,10 +1,7 @@
 ## Todos:
-- mail verification
-    - test if mail is actually being sent
-        - if not learn more about nodemailer (if it works best to learn it anyways)
-    - add the confirmation route (7:29 https://www.youtube.com/watch?v=76tKpVbjhu8)
-    - make login only possible as soon as user is confirmed
-- password reset option
+- Fix problem with conversion of sql date to js date (https://deepinthecode.com/2014/08/05/converting-a-sql-datetime-to-a-javascript-date/)
+- resend option für confirm-email
+- feedback für validator errors
 
 -> start with Ticket selling
 
@@ -15,7 +12,8 @@
 
 ### Security:
 - JWT Tokens for authorization (done!)
-- mail verification
+- mail verification (done!)	 
+- delete unconfirmed users after 24 hours
 - password reset option
 - rate limiter for post request on login/signup
 - recaptcha on sign up
@@ -26,7 +24,7 @@
         - reset password
         - delete account
     - confirm dialogue for log out
-- Show error messages if login/signup fails (messages somehow stopped be interceptor)
+- Remove outline effect on focused inputs
 - DTO-Typed forms (honeypots rausnehmen schwierig...)
 
 ### Database:

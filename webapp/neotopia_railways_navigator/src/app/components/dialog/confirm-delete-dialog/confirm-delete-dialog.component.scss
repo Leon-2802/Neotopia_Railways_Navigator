@@ -1,0 +1,21 @@
+button {
+    width: 70px;
+    height: 30px;
+    font-size: 16px;
+    border: 2px solid #000;
+    border-radius: 5px;
+}
+
+#button-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+#yes {
+    border-color: #3cbe6e;
+}
+
+#no {
+    border-color: #ec4444;
+}

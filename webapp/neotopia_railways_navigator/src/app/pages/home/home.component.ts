@@ -15,23 +15,10 @@ export class HomeComponent {
   public lastScheduledDate: string = "";
 
 
-  constructor(private router: Router, private userService: UserService, private timetableService: TimetableService) { }
+  constructor(private timetableService: TimetableService) { }
 
   ngOnInit() {
     this.loggedUser = sessionStorage.getItem('logged_user');
-  }
-
-  public onLogOut() {
-    this.userService.logOut().subscribe({
-      next: (res) => {
-        console.log('logged out');
-      },
-      error: (err) => {
-        console.error(err.message);
-      }
-    })
-
-    this.router.navigate(['/login']);
   }
 
   public getLastTrainScheduleDate(): void {
@@ -47,7 +34,7 @@ export class HomeComponent {
     });
   }
 
-  public updateLastScheduledDate(): void {
+  private updateLastScheduledDate(): void {
     this.timetableService.updateTrainsScheduled().subscribe({
       next: (res) => {
         console.log(res);

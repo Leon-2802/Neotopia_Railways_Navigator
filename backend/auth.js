@@ -5,20 +5,17 @@ import express from 'express';
 import jsonwebtoken from 'jsonwebtoken';
 import { createRequire } from "module";
 import nodemailer from 'nodemailer';
-import { getUser } from './database.js';
+import { confirmUser, createUser, getIfConfirmed, getUser } from './database.js';
 
 dotenv.config();
 const require = createRequire(import.meta.url);
 const cors = require('cors');
 
-const testAccount = await nodemailer.createTestAccount();
 const transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
-    secure: false,
+    service: 'Gmail',
     auth: {
-        user: testAccount.user,
-        pass: testAccount.pass
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS
     }
 })
 
@@ -36,20 +33,19 @@ app.use(
 
 app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body; // grab user data from http request
+    console.log(email);
     const hash = await bcrypt.hash(password, 13);
     try {
         await createUser(username, email, hash);
-        res.status(201).send(`user "${username}" successfully created`); // 201 = successfully created
-        jwt.sign(
-            {
-                user: username,
-            },
+        const user = { name: username };
+        jsonwebtoken.sign(
+            user,
             process.env.EMAIL_TOKEN_SECRET,
             {
-                exiresIn: '1d',
+                expiresIn: '1d',
             },
             (err, emailToken) => {
-                const url = `http://localhost:4200/confirmation/${emailToken}`;
+                const url = `http://localhost:8081/confirmation/${emailToken}`;
 
                 transporter.sendMail({
                     to: email,
@@ -58,10 +54,28 @@ app.post('/signup', async (req, res) => {
                 })
             },
         );
+        res.status(201).send(`user "${username}" successfully created`); // 201 = successfully created
     }
     catch (error) {
         console.error(error);
         res.status(500).send(error.sqlMessage);
+    }
+});
+
+app.get('/confirmation/:token', async (req, res) => {
+    try {
+        let username;
+        jsonwebtoken.verify(req.params.token, process.env.EMAIL_TOKEN_SECRET, (err, user) => {
+            if (err) return res.sendStatus(403);
+            username = user.name;
+        });
+        await confirmUser(username);
+        console.log(`${username} is confirmed`);
+        return res.redirect('http://localhost:4200/login');
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send(error);
     }
 });
 
@@ -76,6 +90,13 @@ app.post('/login', async (req, res) => {
     if (!passwordValid) {
         res.status(401).send("wrong password");
         return;
+    }
+    const confirmed = await getIfConfirmed(username);
+    if (Buffer.isBuffer(confirmed)) {
+        if (!confirmed.readInt8()) {
+            res.status(401).send("please confirm your mail before your first login");
+            return;
+        }
     }
 
     const user = { name: username };

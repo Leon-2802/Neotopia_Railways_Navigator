@@ -3,6 +3,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoginDataDto, UserDataDto } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
+import { MathService } from 'src/utils/common/shared/math.service';
+import { createPasswordRepeatValidator } from './custom-validators';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +17,7 @@ export class LoginComponent {
     username: new FormControl<string>('', Validators.compose([Validators.required, Validators.minLength(8), Validators.maxLength(30)])),
     email: new FormControl<string>('', Validators.compose([Validators.required, Validators.email])),
     password: new FormControl<string>('', Validators.compose([Validators.required, Validators.minLength(8), Validators.maxLength(50)])),
+    passwordConfirm: new FormControl<string>('', Validators.compose([Validators.required, Validators.minLength(8), Validators.maxLength(50)])),
     honeypot: new FormControl<string>('', Validators.maxLength(0))
   });
   public loginForm = new FormGroup({
@@ -28,11 +31,15 @@ export class LoginComponent {
   public feedbackmsgsignup: string = "";
   public success: boolean = false;
   public selectedTab: number = 0;
+  public showSignupPwd: boolean = false;
+  public showLoginPwd: boolean = false;
 
 
-  constructor(private userService: UserService, private router: Router) { }
+  constructor(private userService: UserService, private router: Router, private mathService: MathService) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    console.log(this.mathService.sqlDatetimeToDate('2023-02-28 12:20:20.02'));
+  }
 
   public onSignup(): void {
     if (this.signupForm.controls.honeypot.dirty) {
@@ -42,7 +49,15 @@ export class LoginComponent {
     }
 
     if (this.signupForm.controls.username.value && this.signupForm.controls.email.value && this.signupForm.controls.password.value) {
-      let newUser: UserDataDto = new UserDataDto(this.signupForm.controls.username.value,
+
+      //check if password repeat is valid:
+      if (this.signupForm.controls.password.value !== this.signupForm.controls.passwordConfirm.value) {
+        this.feedbackmsgsignup = 'Passwords do not match';
+        this.success = false;
+        return;
+      }
+
+      const newUser: UserDataDto = new UserDataDto(this.signupForm.controls.username.value,
         this.signupForm.controls.email.value, this.signupForm.controls.password.value);
 
       this.userService.createUser(newUser).subscribe({
@@ -97,5 +112,14 @@ export class LoginComponent {
   private forwardToApp(username: string): void {
     sessionStorage.setItem('logged_user', username);
     this.router.navigate(['']);
+  }
+
+  public togglePwdVisibility(signup: boolean): void {
+    if (signup) {
+      this.showSignupPwd = !this.showSignupPwd;
+    }
+    else {
+      this.showLoginPwd = !this.showLoginPwd;
+    }
   }
 }

@@ -45,7 +45,7 @@ app.post('/delete_user', authenticateToken, async (req, res) => {
     try {
         await getUser(username);
         await deleteUser(username);
-        res.status(204).send(`user "${username}" deleted`);
+        res.status(204).json({ message: `user: ${username} deleted` });
     }
     catch (error) {
         console.error(error);

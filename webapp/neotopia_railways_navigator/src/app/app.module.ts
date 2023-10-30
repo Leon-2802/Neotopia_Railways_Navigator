@@ -2,7 +2,9 @@ import { ErrorHandler, NgModule } from '@angular/core';
 
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -10,6 +12,8 @@ import { CookieService } from 'ngx-cookie-service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { authInterceptorProviders } from './auth/token.interceptor';
+import { ConfirmDeleteDialogComponent } from './components/dialog/confirm-delete-dialog/confirm-delete-dialog.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthErrorHandlerService } from './services/auth-error-handler.service';
@@ -19,6 +23,8 @@ import { AuthErrorHandlerService } from './services/auth-error-handler.service';
     AppComponent,
     LoginComponent,
     HomeComponent,
+    UserProfileComponent,
+    ConfirmDeleteDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,6 +35,8 @@ import { AuthErrorHandlerService } from './services/auth-error-handler.service';
     ReactiveFormsModule,
     MatTabsModule,
     MatIconModule,
+    MatMenuModule,
+    MatDialogModule,
     HttpClientModule
   ],
   providers: [

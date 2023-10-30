@@ -1,0 +1,19 @@
+#user-profile {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+
+    #profile-icon {
+        color: rgb(85, 85, 85);
+    }
+
+    #profile-icon:hover {
+        cursor: pointer;
+        color: black;
+    }
+
+    #username {
+        font-weight: 800;
+    }
+}

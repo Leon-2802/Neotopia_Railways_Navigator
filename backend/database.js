@@ -22,6 +22,9 @@ async function getUserId(username) {
     SELECT id FROM users
     WHERE username = ?
     `, [username]);
+    if (!id[0]) {
+        return -1;
+    }
     return id[0].id; // cleaner result without the array stuff around it
 }
 
@@ -34,7 +37,7 @@ export async function getUser(username) {
     return user[0];
 }
 
-export async function createUser(username, email, password) {
+export async function createUser(username, email, password, createdAt) {
     await pool.query(`
     INSERT INTO users (username, email, password, confirmed)
     VALUES (?, ?, ?, ?)
@@ -43,18 +46,29 @@ export async function createUser(username, email, password) {
 }
 
 export async function confirmUser(username) {
+    const userId = await getUserId(username);
     await pool.query(`
     UPDATE users 
     SET confirmed = ?
-    WHERE username = ?
-    `, [1, username]);
+    WHERE id = ?
+    `, [1, userId]);
+}
+
+export async function getIfConfirmed(username) {
+    const userId = await getUserId(username);
+    const [confirmed] = await pool.query(`
+    SELECT confirmed FROM users
+    WHERE id = ?
+    `, [userId]);
+    return confirmed[0].confirmed;
 }
 
 export async function deleteUser(username) {
+    const userId = await getUserId(username);
     await pool.query(`
     DELETE FROM users 
-    WHERE username = ?
-    `, [username]);
+    WHERE id = ?
+    `, [userId]);
 }
 // -----------------------------------------------------------------------------
 

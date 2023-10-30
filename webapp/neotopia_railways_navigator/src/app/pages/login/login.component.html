@@ -4,7 +4,14 @@
             <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
                 <input id="username" type="text" placeholder="Username" formControlName="username">
                 <input id="email" type="text" placeholder="Email" formControlName="email">
-                <input id="password" type="password" placeholder="Password" formControlName="password">
+                <input id="password00" [type]="showSignupPwd ? 'text' : 'password'" placeholder="Password"
+                    formControlName="password">
+                <input id="password01" [type]="showSignupPwd ? 'text' : 'password'" placeholder="Repeat password"
+                    formControlName="passwordConfirm">
+                <div id="passwordVisibilitySignup">
+                    <input name="togglePwdVisibility" type="checkbox" (click)="togglePwdVisibility(true)">
+                    <label for="togglePwdVisibility">Show password</label>
+                </div>
                 <input id="honeypot-00" class="honeypot" type="text" formControlName="honeypot">
                 <button id="signup" type="submit" [disabled]="!signupForm.valid">Sign up</button>
                 <p id="feedback-message-signup" [ngClass]="success ? 'success-message' : 'error-message'">
@@ -14,7 +21,12 @@
         <mat-tab label="Login">
             <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
                 <input id="username" type="text" placeholder="Username" formControlName="username">
-                <input id="password" type="password" placeholder="Password" formControlName="password">
+                <input id="password" [type]="showLoginPwd ? 'text' : 'password'" placeholder="Password"
+                    formControlName="password">
+                <div id="passwordVisibilityLogin">
+                    <input name="togglePwdVisibility" type="checkbox" (click)="togglePwdVisibility(false)">
+                    <label for="togglePwdVisibility">Show password</label>
+                </div>
                 <div id="rememberMe">
                     <input name="rememberUser" type="checkbox" formControlName="rememberMe">
                     <label for="rememberUser">Remember Login</label>

@@ -1,0 +1,14 @@
+<div id="user-profile">
+    <mat-icon id="profile-icon" aria-hidden="false" aria-label="user profile icon" fontIcon="account_circle"
+        [matMenuTriggerFor]="profileMenu">
+    </mat-icon>
+    <mat-menu #profileMenu="matMenu" class="profile-menu">
+        <p id="username" mat-menu-item>{{loggedUser}}</p>
+        <button mat-menu-item type="button"><mat-icon fontIcon="lock_reset"></mat-icon>
+            <span>Reset Password</span></button>
+        <button mat-menu-item type="button" (click)="onDeleteAccount()"><mat-icon fontIcon="delete_forever"></mat-icon>
+            <span>Delete Account</span></button>
+        <button mat-menu-item type="button" (click)="onLogOut()"><mat-icon fontIcon="logout"></mat-icon>
+            <span>Logout</span></button>
+    </mat-menu>
+</div>

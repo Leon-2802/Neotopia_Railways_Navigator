@@ -24,6 +24,11 @@ form {
             height: 15px;
         }
 
+        input:focus {
+            border: 1px solid #3b69af;
+            outline: none;
+        }
+
         label {
             margin-left: 5px;
             font-size: 14px;
@@ -54,4 +59,8 @@ form {
 
 #tab-group {
     width: 600px;
+}
+
+#passwordVisibilityLogin {
+    margin-bottom: 10px;
 }

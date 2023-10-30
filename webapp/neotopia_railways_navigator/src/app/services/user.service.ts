@@ -25,12 +25,12 @@ export class UserService {
             user, { headers: headers, observe: 'response', responseType: 'text' });
     }
 
-    public fetchUser(username: string) {
+    public fetchUser(username: string): Observable<any> {
         return this.http.get<{ user: UserDataDto }>(
             `http://localhost:8080/users/${username}`, { responseType: 'json' });
     }
 
-    public logOut() {
+    public logOut(): Observable<any> {
         sessionStorage.removeItem('logged_user');
         let headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200');
         return this.http.post(
@@ -38,12 +38,11 @@ export class UserService {
             { headers: headers, observe: 'response', responseType: 'json' });
     }
 
-    public deleteUser(username: string) {
-        const deleteData: DeleteDataDto = new DeleteDataDto(username);
+    public deleteUser(deleteData: DeleteDataDto): Observable<any> {
         let headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200');
         return this.http.post(
             'http://localhost:8080/delete_user',
-            deleteData, { headers: headers, observe: 'response', responseType: 'text' });
+            deleteData, { headers: headers, observe: 'response', responseType: 'json' });
     }
 
     public async canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
