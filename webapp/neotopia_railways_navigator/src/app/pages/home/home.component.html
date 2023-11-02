@@ -1,10 +1,10 @@
 <div id="top-bar">
     <nav>
-        <a href="#">Trip planner</a>
-        <a (click)="getLastTrainScheduleDate()" href="#">Timetable</a>
-        <a href="#">My tickets</a>
+        <a [ngClass]="tripPlannerActive ? 'active-route' : ''" (click)="navigateTo('/trip-planner')">Trip planner</a>
+        <a [ngClass]="mapActive ? 'active-route' : ''" (click)="navigateTo('/map')">Map</a>
+        <a [ngClass]="myTicketsActive ? 'active-route' : ''" (click)="navigateTo('/my-tickets')">My tickets</a>
     </nav>
     <app-user-profile></app-user-profile>
 </div>
-<p>Logged in as: {{loggedUser}}</p>
 <p>{{lastScheduledDate}}</p>
+<router-outlet></router-outlet>

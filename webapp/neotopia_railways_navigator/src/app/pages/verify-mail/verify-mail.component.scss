@@ -1,0 +1,26 @@
+.error-message {
+    color: rgb(208, 68, 68);
+}
+
+.success-message {
+    color: rgb(68, 208, 87);
+}
+
+#wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+#title {
+    font-size: 20px;
+}
+
+#resend-mail {
+    font-size: 13px;
+}
+
+#resend-mail:hover {
+    cursor: pointer;
+    color: #3b69af
+}

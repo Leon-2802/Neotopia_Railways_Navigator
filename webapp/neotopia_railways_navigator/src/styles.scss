@@ -44,6 +44,10 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+button:hover {
+  cursor: pointer;
+}
+
 a {
   color: black;
   text-decoration: none;

@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoginDataDto, UserDataDto } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
-import { MathService } from 'src/utils/common/shared/math.service';
-import { createPasswordRepeatValidator } from './custom-validators';
 
 @Component({
   selector: 'app-login',
@@ -35,10 +34,9 @@ export class LoginComponent {
   public showLoginPwd: boolean = false;
 
 
-  constructor(private userService: UserService, private router: Router, private mathService: MathService) { }
+  constructor(private userService: UserService, private router: Router, public dialog: MatDialog) { }
 
   ngOnInit() {
-    console.log(this.mathService.sqlDatetimeToDate('2023-02-28 12:20:20.02'));
   }
 
   public onSignup(): void {
@@ -64,8 +62,9 @@ export class LoginComponent {
         next: (res) => {
           this.feedbackmsgsignup = res.body;
           this.success = true;
+          sessionStorage.setItem("pending_user", newUser.username);
           setTimeout(() => {
-            this.selectedTab = 1;
+            this.router.navigate(['/verify-mail']);
           }, 200);
         },
         error: (err) => {
@@ -110,6 +109,9 @@ export class LoginComponent {
   }
 
   private forwardToApp(username: string): void {
+    if (sessionStorage.getItem("pending_user")) {
+      sessionStorage.removeItem("pending_user");
+    }
     sessionStorage.setItem('logged_user', username);
     this.router.navigate(['']);
   }

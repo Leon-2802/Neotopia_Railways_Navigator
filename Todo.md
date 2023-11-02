@@ -1,9 +1,15 @@
 ## Todos:
-- Fix problem with conversion of sql date to js date (https://deepinthecode.com/2014/08/05/converting-a-sql-datetime-to-a-javascript-date/)
-- resend option für confirm-email
 - feedback für validator errors
 
--> start with Ticket selling
+- Implement mechanic for scheduling trains
+    - plan trains-table (unique datetime, capacity, number of sold tickets)
+    - server-side function
+    - schedule next 2 months (30 days) on startup
+    - reschedule after 1 month
+    - delete trains if destination_at is a date before today
+
+- Implement trip planner mechanic (shortest route from a to b)
+    - Get trains by datetime
 
 ### Backend:
 - Error handling: Catch sql errors and send to client
@@ -13,6 +19,7 @@
 ### Security:
 - JWT Tokens for authorization (done!)
 - mail verification (done!)	 
+- limit login attempts to 5 per hour
 - delete unconfirmed users after 24 hours
 - password reset option
 - rate limiter for post request on login/signup
@@ -20,10 +27,10 @@
 
 ### Frontend:
 - Home-page with map of trains and form for searching train connections 
-    - dialogue for user profile modifications
-        - reset password
-        - delete account
-    - confirm dialogue for log out
+    - Maybe show timetable 
+        - define in timetable.js
+        - define rest-path for requests
+        - show on webpage as html table
 - Remove outline effect on focused inputs
 - DTO-Typed forms (honeypots rausnehmen schwierig...)
 

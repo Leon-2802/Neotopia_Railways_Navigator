@@ -37,6 +37,15 @@ export async function getUser(username) {
     return user[0];
 }
 
+export async function getUnconfirmedUsers() {
+    const [users] = await pool.query(`
+    SELECT id FROM users
+    WHERE confirmed = ?
+    `, [0]);
+    console.log(users);
+    return users;
+}
+
 export async function createUser(username, email, password, createdAt) {
     await pool.query(`
     INSERT INTO users (username, email, password, confirmed)

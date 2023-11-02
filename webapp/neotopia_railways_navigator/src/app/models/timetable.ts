@@ -5,3 +5,13 @@ export class ScheduleDateDto {
         this.date = date;
     }
 }
+
+export interface TrainLine {
+    startCity: string;
+    firstTrain: string;
+    middleStopCity: string;
+    middleStopDuration: string;
+    destinationCity: string;
+    destinationDuration: string;
+    period: string;
+}

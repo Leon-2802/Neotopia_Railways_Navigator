@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import express from 'express';
 import jsonwebtoken from 'jsonwebtoken';
 import { createRequire } from "module";
-import { deleteUser, getTrainsScheduledTable, getUser, getUsers, setTrainsScheduled } from './database.js';
+import { deleteUser, getTrainsScheduledTable, getUnconfirmedUsers, getUser, getUsers, setTrainsScheduled } from './database.js';
 
 dotenv.config();
 const require = createRequire(import.meta.url);
@@ -36,6 +36,19 @@ app.get('/users/:username', async (req, res) => {
     catch (error) {
         console.error(error);
         res.status(500).send(`user ${username} not found`);
+    }
+});
+
+// needs a rework... (not working atm)
+app.get('users/unconfirmed', async (req, res) => {
+    try {
+        const users = await getUnconfirmedUsers();
+        console.log(users);
+        res.send(users);
+    }
+    catch (error) {
+        console.error(error);
+        res.sendStatus(500);
     }
 });
 

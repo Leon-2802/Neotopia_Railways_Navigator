@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { DeleteDataDto } from 'src/app/models/user';
+import { UsernameDto } from 'src/app/models/user';
 import { UserService } from 'src/app/services/user.service';
 import { ConfirmDeleteDialogComponent } from '../dialog/confirm-delete-dialog/confirm-delete-dialog.component';
 
@@ -44,7 +44,7 @@ export class UserProfileComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (this.loggedUser && result == true) {
-        const deleteData: DeleteDataDto = new DeleteDataDto(this.loggedUser);
+        const deleteData: UsernameDto = new UsernameDto(this.loggedUser);
         this.userService.deleteUser(deleteData).subscribe({
           next: (res) => {
             console.log("Delete confirmed");

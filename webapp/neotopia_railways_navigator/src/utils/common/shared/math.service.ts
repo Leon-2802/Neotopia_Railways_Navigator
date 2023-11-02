@@ -38,7 +38,7 @@ export class MathService {
         // format of sqlDateArray2[] = ['hh','mm','ss.ms']
         const hour: number = +sqlDateArray2[0];
         const minute: number = +sqlDateArray2[1];
-        const sqlDateArray3: string[] = sqlDateArray2[1].split(".");
+        const sqlDateArray3: string[] = sqlDateArray2[2].split(".");
         // format of sqlDateArray3[] = ['ss','ms']
         const second: number = +sqlDateArray3[0];
         const millisecond: number = +sqlDateArray3[1];

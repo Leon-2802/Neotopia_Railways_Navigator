@@ -1,0 +1,7 @@
+<div id="wrapper">
+    <div id="content">
+        <p id="title">Please verify your mail-adress by clicking the link, which was sent to you by mail</p>
+        <p id="resend-mail" (click)="onResendMail()">Resend confirmation mail</p>
+        <p id="feedback-msg" [ngClass]="success ? 'success-message' : 'error-message'">{{feedbackMsg}}</p>
+    </div>
+</div>

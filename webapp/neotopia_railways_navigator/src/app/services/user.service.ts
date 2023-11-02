@@ -18,6 +18,13 @@ export class UserService {
             user, { headers: headers, observe: 'response', responseType: 'text' });
     }
 
+    public resendConfirmationMail(username: UsernameDto): Observable<any> {
+        let headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200'); // cors stuff nochmal durchlesen
+        return this.http.post(
+            'http://localhost:8081/resend_confirmation_mail',
+            username, { headers: headers, observe: 'response', responseType: 'text' });
+    }
+
     public authenticateUser(user: LoginDataDto): Observable<any> {
         let headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200');
         return this.http.post(

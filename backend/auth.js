@@ -66,6 +66,13 @@ app.post('/resend_confirmation_mail', async (req, res) => {
     const { username } = req.body;
     try {
         const userData = await getUser(username);
+        const confirmed = await getIfConfirmed(username);
+        if (Buffer.isBuffer(confirmed)) {
+            if (confirmed.readInt8()) {
+                res.status(500).send(`User: ${username} is already confirmed`);
+                return;
+            }
+        }
         const user = { name: username };
         jsonwebtoken.sign(
             user,

@@ -11,14 +11,26 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class HomeComponent {
 
-  public loggedUser: string | null = "";
   public lastScheduledDate: string = "";
+  public tripPlannerActive: boolean = false;
+  public mapActive: boolean = false;
+  public myTicketsActive: boolean = false;
 
 
-  constructor(private timetableService: TimetableService) { }
+  constructor(private timetableService: TimetableService, private router: Router) { }
 
   ngOnInit() {
-    this.loggedUser = sessionStorage.getItem('logged_user');
+    this.routeFeedback(this.router.url);
+  }
+
+  public navigateTo(path: string) {
+    this.router.navigate([path]);
+
+    this.tripPlannerActive = false;
+    this.mapActive = false;
+    this.myTicketsActive = false;
+
+    this.routeFeedback(path);
   }
 
   public getLastTrainScheduleDate(): void {
@@ -43,5 +55,19 @@ export class HomeComponent {
         console.error(err);
       }
     });
+  }
+
+  private routeFeedback(path: string): void {
+    switch (path) {
+      case '/trip-planner':
+        this.tripPlannerActive = true;
+        break;
+      case '/map':
+        this.mapActive = true;
+        break;
+      case '/my-tickets':
+        this.myTicketsActive = true;
+        break
+    }
   }
 }
