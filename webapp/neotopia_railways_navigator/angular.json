@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "neotopia_railways_navigator:build:production"
+              "buildTarget": "neotopia_railways_navigator:build:production"
             },
             "development": {
-              "browserTarget": "neotopia_railways_navigator:build:development"
+              "buildTarget": "neotopia_railways_navigator:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,7 +76,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "neotopia_railways_navigator:build"
+            "buildTarget": "neotopia_railways_navigator:build"
           }
         },
         "test": {
