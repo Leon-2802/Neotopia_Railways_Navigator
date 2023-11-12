@@ -1,6 +1,7 @@
 import cookieParser from 'cookie-parser';
 import dotenv from "dotenv";
 import express from 'express';
+import helmet from "helmet";
 import jsonwebtoken from 'jsonwebtoken';
 import { createRequire } from "module";
 import { deleteUser, getTrainsScheduledTable, getUnconfirmedUsers, getUser, getUsers, setTrainsScheduled } from './database.js';
@@ -13,6 +14,7 @@ const cors = require('cors');
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(helmet());
 app.use(
     cors({
         origin: 'http://localhost:4200',
@@ -22,12 +24,12 @@ app.use(
 
 
 // user management ----------------------------------------------------
-app.get('/users', async (req, res) => {
+app.get('/users', authenticateToken, async (req, res) => {
     const users = await getUsers();
     res.send(users);
 });
 
-app.get('/users/:username', async (req, res) => {
+app.get('/users/:username', authenticateToken, async (req, res) => {
     const username = req.params.username;
     try {
         const user = await getUser(username);

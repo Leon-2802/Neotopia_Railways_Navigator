@@ -1,6 +1,15 @@
 ## Todos:
 - feedback für validator errors
 
+- dockerize the app
+    - add db container
+    - persist data
+    - all working together?
+    - How to update container during development?
+
+- watch:
+    https://www.youtube.com/watch?v=iA6iyoantuo
+
 - Implement mechanic for scheduling trains
     - plan trains-table (unique datetime, capacity, number of sold tickets)
     - server-side function

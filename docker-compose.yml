@@ -1,0 +1,16 @@
+version: '3'
+services:
+  backend:
+    build: ./backend/
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+  db:
+    image: "mysql"
+    # TODO add additional db image stuff
+  frontend:
+    build: ./webapp/neotopia_railways_navigator/
+    ports:
+      - "4200:4200"
+
+volumes: # How to persist db data?

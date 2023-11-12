@@ -2,10 +2,12 @@ import bcrypt from 'bcryptjs';
 import cookieParser from 'cookie-parser';
 import dotenv from "dotenv";
 import express from 'express';
+import helmet from 'helmet';
 import jsonwebtoken from 'jsonwebtoken';
 import { createRequire } from "module";
 import nodemailer from 'nodemailer';
 import { confirmUser, createUser, getIfConfirmed, getUser } from './database.js';
+
 
 dotenv.config();
 const require = createRequire(import.meta.url);
@@ -23,6 +25,7 @@ const transporter = nodemailer.createTransport({
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(helmet());
 app.use(
     cors({
         origin: 'http://localhost:4200',
