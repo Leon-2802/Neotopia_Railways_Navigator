@@ -1,12 +1,10 @@
-version: '3'
+version: '3.1'
 services:
   backend:
     build: ./backend/
     ports:
       - "8080:8080"
       - "8081:8081"
-    volumes:
-      - ./:/app
     environment:
       MYSQL_HOST: mysql
       MYSQL_USER: root
@@ -21,7 +19,7 @@ services:
   frontend:
     build: ./webapp/neotopia_railways_navigator/
     ports:
-      - "4200:4200"
+      - "4200:80" # port mapping from port on local machine to port on docker container
 
 volumes:
   neotopia-mysql-data:

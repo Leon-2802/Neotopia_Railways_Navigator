@@ -1,26 +1,25 @@
-### Stage 1: Build ###
+### Stage 1: Compile and build angular codebase ###
 # baseimage for angular
-FROM node:18.17.1 
+FROM node:18.17.1 as build
 
-# app source code inside container
-WORKDIR /app
+# app directory inside container
+WORKDIR /usr/src/app-root/
 
-# copy package.json into the container root directory
-COPY package*.json ./
+# copy all the source code to the app-root directory
+COPY . /usr/src/app-root/
 
 # install all node_modules
 RUN npm install npm@10.2.3
 RUN rm -rf /usr/local/lib/node_modules/npm
 RUN mv node_modules/npm /usr/local/lib/node_modules/npm
 RUN npm install
+RUN npm run build
 
-# copy all of the source code into docker image (dockerignore sets node_modules to be ignored)
-COPY . .
 
-ENV PORT=4200
+### Stage 2: Serve app with nginx server
 
-EXPOSE 4200
-
-# one per docker file, here whe run the express apps
-# arrays of strings as commands don't start up a shell session
-CMD [ "ng", "serve"]
+# use official nginx image as base image
+FROM nginx:latest
+# copy the build output to replace the default nginx contents
+COPY --from=build /usr/src/app-root/dist/neotopia_railways_navigator /usr/share/nginx/html
+EXPOSE 80

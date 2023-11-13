@@ -18,4 +18,4 @@ EXPOSE 8081
 
 # one per docker file, here whe run the express apps
 # arrays of strings as commands don't start up a shell session
-CMD [ "npm", "run", "dev"]
+CMD ["npx", "nodemon", "app.js", "&&", "npx", "nodemon", "auth.js"]

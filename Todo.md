@@ -7,7 +7,7 @@
     - all working together?
     - How to update container during development?
 
-- watch:
+- Angular 17 -> watch:
     - https://www.youtube.com/watch?v=iA6iyoantuo
     - https://www.youtube.com/watch?v=Byttv3YpjQk
 
