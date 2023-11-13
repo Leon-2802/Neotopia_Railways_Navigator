@@ -5,12 +5,23 @@ services:
     ports:
       - "8080:8080"
       - "8081:8081"
-  db:
-    image: "mysql"
+    volumes:
+      - ./:/app
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: FullStackSmasher01
+      MYSQL_DB: neotopia_rail
+  mysql:
+    image: "mysql:8.0"
+    environment:
+      MYSQL_ROOT_PASSWORD: FullStackSmasher01
+      MYSQL_DATABASE: neotopia_rail
     # TODO add additional db image stuff
   frontend:
     build: ./webapp/neotopia_railways_navigator/
     ports:
       - "4200:4200"
 
-volumes: # How to persist db data?
+volumes:
+  neotopia-mysql-data:

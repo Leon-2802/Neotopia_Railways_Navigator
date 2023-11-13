@@ -1,5 +1,6 @@
-# baseimage = ie. ubuntu. ubuntu does not have node.js installed by default, so I use the node baseimage
-FROM node:18.17.1
+### Stage 1: Build ###
+# baseimage for angular
+FROM node:18.17.1 
 
 # app source code inside container
 WORKDIR /app
@@ -8,6 +9,9 @@ WORKDIR /app
 COPY package*.json ./
 
 # install all node_modules
+RUN npm install npm@10.2.3
+RUN rm -rf /usr/local/lib/node_modules/npm
+RUN mv node_modules/npm /usr/local/lib/node_modules/npm
 RUN npm install
 
 # copy all of the source code into docker image (dockerignore sets node_modules to be ignored)

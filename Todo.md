@@ -1,5 +1,5 @@
 ## Todos:
-- feedback für validator errors
+- username wird nach erneuten auto-login nicht in material-card angezeigt
 
 - dockerize the app
     - add db container
@@ -8,7 +8,8 @@
     - How to update container during development?
 
 - watch:
-    https://www.youtube.com/watch?v=iA6iyoantuo
+    - https://www.youtube.com/watch?v=iA6iyoantuo
+    - https://www.youtube.com/watch?v=Byttv3YpjQk
 
 - Implement mechanic for scheduling trains
     - plan trains-table (unique datetime, capacity, number of sold tickets)
