@@ -1,12 +1,6 @@
 ## Todos:
 - username wird nach erneuten auto-login nicht in material-card angezeigt
 
-- dockerize the app
-    - add db container
-    - persist data
-    - all working together?
-    - How to update container during development?
-
 - Angular 17 -> watch:
     - https://www.youtube.com/watch?v=iA6iyoantuo
     - https://www.youtube.com/watch?v=Byttv3YpjQk
@@ -54,6 +48,9 @@
 
 ### Backlog:
 - RxJS genau anschauen: https://www.youtube.com/watch?v=tGWBy6Vqq9w (13:41)
+- dockerize the app
+    - https://www.youtube.com/watch?v=IDVUy34vlSE
+    - Cors errors, wtf is nginx and how to do db connection???
 - using only get and post ok?
 - Learn about SSL encryption, so data can be safely transferred through https(!) requests
 - Learn about OpenID Connect and other auth frameworks
