@@ -3,7 +3,11 @@
 
 - Angular 17 -> watch:
     - https://www.youtube.com/watch?v=iA6iyoantuo
-    - https://www.youtube.com/watch?v=Byttv3YpjQk
+    -> use signals?
+
+- RxJS fine-tuning:
+    - make observables strictly typed
+        - implement observable streams with pipe and return as observable<type>
 
 - Implement mechanic for scheduling trains
     - plan trains-table (unique datetime, capacity, number of sold tickets)
@@ -31,11 +35,7 @@
 
 ### Frontend:
 - Home-page with map of trains and form for searching train connections 
-    - Maybe show timetable 
-        - define in timetable.js
-        - define rest-path for requests
-        - show on webpage as html table
-- Remove outline effect on focused inputs
+- Buy tickets and store in db through api
 - DTO-Typed forms (honeypots rausnehmen schwierig...)
 
 ### Database:
@@ -51,6 +51,8 @@
 - dockerize the app
     - https://www.youtube.com/watch?v=IDVUy34vlSE
     - Cors errors, wtf is nginx and how to do db connection???
+    - How to have it update during development?
+    - deploy with docker?
 - using only get and post ok?
 - Learn about SSL encryption, so data can be safely transferred through https(!) requests
 - Learn about OpenID Connect and other auth frameworks
