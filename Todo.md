@@ -8,6 +8,7 @@
 - RxJS fine-tuning:
     - make observables strictly typed
         - implement observable streams with pipe and return as observable<type>
+    -> goal: declarative code (https://www.youtube.com/watch?v=skOTEbGwncE)
 
 - Implement mechanic for scheduling trains
     - plan trains-table (unique datetime, capacity, number of sold tickets)
