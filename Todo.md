@@ -5,6 +5,7 @@
 
 - Angular 17 -> watch:
     - https://www.youtube.com/watch?v=iA6iyoantuo
+    - https://www.youtube.com/watch?v=z7zK2u4vBrA
     -> use signals?
 
 - RxJS fine-tuning:
