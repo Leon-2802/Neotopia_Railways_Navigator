@@ -1,6 +1,8 @@
 ## Todos:
 - username wird nach erneuten auto-login nicht in material-card angezeigt
 
+- clean up authentication: https://www.youtube.com/watch?v=foUS5JlDlCs
+
 - Angular 17 -> watch:
     - https://www.youtube.com/watch?v=iA6iyoantuo
     -> use signals?
