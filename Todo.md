@@ -1,6 +1,9 @@
 ## Todos:
+- clean up authentication: https://www.youtube.com/watch?v=foUS5JlDlCs
+
 - Angular 17 -> watch:
     - https://www.youtube.com/watch?v=iA6iyoantuo
+    - https://www.youtube.com/watch?v=z7zK2u4vBrA
     -> use signals?
 
 - Implement mechanic for scheduling trains
