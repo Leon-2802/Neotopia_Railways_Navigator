@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { UsernameDto } from 'src/app/models/user';
+import { Subject, takeUntil } from 'rxjs';
+import { UsernameDto } from 'src/app/models/userDto';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -20,8 +21,9 @@ export class VerifyMailComponent {
       const usernameData: UsernameDto = new UsernameDto(username);
       this.userService.resendConfirmationMail(usernameData).subscribe({
         next: (res) => {
-          console.log(res.body);
-          this.feedbackMsg = res.body;
+          console.log(res);
+          if (res)
+            this.feedbackMsg = res;
           this.success = true;
         },
         error: (err) => {

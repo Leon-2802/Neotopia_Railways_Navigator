@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { UsernameDto } from 'src/app/models/user';
+import { Subject, switchMap, takeUntil } from 'rxjs';
+import { UsernameDto } from 'src/app/models/userDto';
 import { UserService } from 'src/app/services/user.service';
 import { ConfirmDeleteDialogComponent } from '../dialog/confirm-delete-dialog/confirm-delete-dialog.component';
 
@@ -18,10 +19,11 @@ export class UserProfileComponent {
 
   public loggedUser: string | null = "";
 
+
   constructor(public dialog: MatDialog, private router: Router, private userService: UserService) { }
 
   ngOnInit() {
-    this.loggedUser = sessionStorage.getItem('logged_user');
+    this.loggedUser = localStorage.getItem('logged_user');
   }
 
   public onLogOut() {

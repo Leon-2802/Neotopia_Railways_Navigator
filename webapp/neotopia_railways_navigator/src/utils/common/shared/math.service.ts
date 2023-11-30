@@ -15,7 +15,7 @@ export class MathService {
         return result;
     }
 
-    public formatDate(date: Date): string {
+    public formatDateToString(date: Date): string {
         const offset = date.getTimezoneOffset();
         date = new Date(date.getTime() + (offset * 60 * 1000));
         const year = date.toLocaleString("default", { year: "numeric" });
@@ -26,24 +26,23 @@ export class MathService {
     }
 
     public sqlDatetimeToDate(datetime: string): Date {
-        // datetime format = "yyyy-mm-dd hh:mm:ss.ms"
-        const sqlDateArray0: string[] = datetime.split("-");
-        // sqlDateArray0 = ['yyyy','mm','dd hh:mm:ms']
-        const year: number = +sqlDateArray0[0];
-        const month: number = (Number(+sqlDateArray0[1]) - 1);
-        const sqlDateArray1: string[] = sqlDateArray0[2].split(" ");
-        // sqlDateArray1 = ['dd', 'hh:mm:ss.ms']
-        const day: number = +sqlDateArray1[0];
-        const sqlDateArray2: string[] = sqlDateArray1[1].split(":");
-        // format of sqlDateArray2[] = ['hh','mm','ss.ms']
+        // datetime format = "yyyy-mm-ddThh:mm:ss.msZ"
+        const sqlDateArray0: string[] = datetime.split("T");
+        // sqlDateArray0 = ['yyyy-mm-dd' 'hh:mm:msZ']
+        const sqlDateArray1: string[] = sqlDateArray0[0].split("-");
+        // sqlDateArray1 = ['yyyy' 'mm' 'dd' 'hh:mm:msZ']
+        const year: number = +sqlDateArray1[0];
+        const month: number = (Number(+sqlDateArray1[1]) - 1);
+        const day: number = +sqlDateArray1[2];
+        const sqlDateArray2: string[] = sqlDateArray0[1].split(":");
+        // format of sqlDateArray2[] = ['hh','mm','ss.msZ']
         const hour: number = +sqlDateArray2[0];
         const minute: number = +sqlDateArray2[1];
         const sqlDateArray3: string[] = sqlDateArray2[2].split(".");
-        // format of sqlDateArray3[] = ['ss','ms']
+        // format of sqlDateArray3[] = ['ss','msZ']
         const second: number = +sqlDateArray3[0];
-        const millisecond: number = +sqlDateArray3[1];
 
-        return new Date(year, month, day, hour, minute, second, millisecond);
+        return new Date(year, month, day, hour, minute, second);
     }
 
     public getDate24HoursLater(): Date {

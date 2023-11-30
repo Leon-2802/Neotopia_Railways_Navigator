@@ -18,7 +18,7 @@ export class TimetableService {
     }
 
     public updateTrainsScheduled(): Observable<any> {
-        const newDate: string = this.mathService.formatDate(new Date());
+        const newDate: string = this.mathService.formatDateToString(new Date());
         const payload: ScheduleDateDto = new ScheduleDateDto(newDate);
 
         const headers = new HttpHeaders({ 'Access-Control-Allow-Origin': 'http://localhost:4200' });

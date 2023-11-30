@@ -1,14 +1,7 @@
 ## Todos:
-- username wird nach erneuten auto-login nicht in material-card angezeigt
-
 - Angular 17 -> watch:
     - https://www.youtube.com/watch?v=iA6iyoantuo
     -> use signals?
-
-- RxJS fine-tuning:
-    - make observables strictly typed
-        - implement observable streams with pipe and return as observable<type>
-    -> goal: declarative code (https://www.youtube.com/watch?v=skOTEbGwncE)
 
 - Implement mechanic for scheduling trains
     - plan trains-table (unique datetime, capacity, number of sold tickets)
@@ -18,7 +11,10 @@
     - delete trains if destination_at is a date before today
 
 - Implement trip planner mechanic (shortest route from a to b)
-    - Get trains by datetime
+    - Get trains by datetime 
+        - Typed Observables with ts version of train object
+        - user async pipe https://www.youtube.com/watch?v=kb9CBd2c4uA&list=PLvLBrJpVwC7oDMei6JYcySgH1hMBZti_a&index=32
+        -> declarative code https://www.youtube.com/watch?v=-CoVmNvp_1g (4:50)
 
 ### Backend:
 - Error handling: Catch sql errors and send to client

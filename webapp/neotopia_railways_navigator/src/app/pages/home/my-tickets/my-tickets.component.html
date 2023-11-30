@@ -1,1 +1,10 @@
-<p>my-tickets works!</p>
+<mat-card>
+    <mat-card-content>
+        @if (currentUser) {
+        <h4>Active User: {{currentUser.username}}</h4>
+        <p>Email: {{currentUser.email}}</p>
+        <p>Confirmed?: {{currentUser.confirmed}}</p>
+        <p>Created At: {{currentUser.createdAt}}</p>
+        }
+    </mat-card-content>
+</mat-card>

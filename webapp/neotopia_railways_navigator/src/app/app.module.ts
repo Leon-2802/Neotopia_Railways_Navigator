@@ -2,6 +2,7 @@ import { ErrorHandler, NgModule } from '@angular/core';
 
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -21,6 +22,7 @@ import { TripPlannerComponent } from './pages/home/trip-planner/trip-planner.com
 import { LoginComponent } from './pages/login/login.component';
 import { VerifyMailComponent } from './pages/verify-mail/verify-mail.component';
 import { AuthErrorHandlerService } from './services/auth-error-handler.service';
+
 
 @NgModule({
   declarations: [
@@ -46,7 +48,8 @@ import { AuthErrorHandlerService } from './services/auth-error-handler.service';
     MatIconModule,
     MatMenuModule,
     MatDialogModule,
-    HttpClientModule
+    HttpClientModule,
+    MatCardModule
   ],
   providers: [
     authInterceptorProviders,

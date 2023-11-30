@@ -7,7 +7,7 @@ import {
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, catchError, filter, switchMap, take, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError, filter, switchMap, take, takeUntil, throwError } from 'rxjs';
 import { JwtTokenService } from '../services/jwt-token.service';
 import { UserService } from '../services/user.service';
 

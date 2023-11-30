@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { LoginDataDto, UserDataDto } from 'src/app/models/user';
+import { Subject, takeUntil } from 'rxjs';
+import { LoginDataDto, UserDataRequestDto } from 'src/app/models/userDto';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -34,6 +35,7 @@ export class LoginComponent {
   public showLoginPwd: boolean = false;
 
 
+
   constructor(private userService: UserService, private router: Router, public dialog: MatDialog) { }
 
   ngOnInit() {
@@ -55,12 +57,13 @@ export class LoginComponent {
         return;
       }
 
-      const newUser: UserDataDto = new UserDataDto(this.signupForm.controls.username.value,
+      const newUser: UserDataRequestDto = new UserDataRequestDto(this.signupForm.controls.username.value,
         this.signupForm.controls.email.value, this.signupForm.controls.password.value);
 
       this.userService.createUser(newUser).subscribe({
         next: (res) => {
-          this.feedbackmsgsignup = res.body;
+          if (res)
+            this.feedbackmsgsignup = res;
           this.success = true;
           sessionStorage.setItem("pending_user", newUser.username);
           setTimeout(() => {
@@ -93,9 +96,9 @@ export class LoginComponent {
 
       this.userService.authenticateUser(logindata).subscribe({
         next: (res) => {
-          let parsedRes = JSON.parse(res.body);
+          if (res)
+            this.feedbackmsglogin = res;
           this.success = true;
-          this.feedbackmsglogin = parsedRes.message;
 
           this.forwardToApp(logindata.username);
         },
@@ -112,7 +115,7 @@ export class LoginComponent {
     if (sessionStorage.getItem("pending_user")) {
       sessionStorage.removeItem("pending_user");
     }
-    sessionStorage.setItem('logged_user', username);
+    localStorage.setItem('logged_user', username);
     this.router.navigate(['']);
   }
 
