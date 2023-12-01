@@ -1,18 +1,20 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { authUrl } from 'src/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class JwtTokenService {
 
+  private headers: HttpHeaders = new HttpHeaders().set('Access-Control-Allow-Origin', origin);
+
   constructor(private http: HttpClient) { }
 
   public async checkAccessToken(): Promise<boolean> {
-    let headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200');
     return this.http.post(
-      'http://localhost:8081/authorize', { headers: headers }).toPromise().then(
+      authUrl + 'authorize', { headers: this.headers }).toPromise().then(
         data => {
           return true;
         }).catch(err => {
@@ -22,8 +24,7 @@ export class JwtTokenService {
   }
 
   public refreshToken(): Observable<any> {
-    let headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200');
     return this.http.post(
-      'http://localhost:8081/token', { headers: headers, observe: 'response', responseType: 'json' });
+      authUrl + 'token', { headers: this.headers, observe: 'response', responseType: 'json' });
   }
 }

@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable, inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from "@angular/router";
 import { Observable, map, switchMap } from "rxjs";
+import { authUrl, origin, url } from "src/environment";
 import { MathService } from "src/utils/common/shared/math.service";
 import { User } from "../models/user";
 import { LoginDataDto, UserDataRequestDto, UserDataResponseDto, UsernameDto } from "../models/userDto";
@@ -11,14 +12,14 @@ import { JwtTokenService } from "./jwt-token.service";
 @Injectable({ providedIn: "root" })
 export class UserService {
 
-    private headers = new HttpHeaders().set('Access-Control-Allow-Origin', 'http://localhost:4200');
+    private headers: HttpHeaders = new HttpHeaders().set('Access-Control-Allow-Origin', origin);
 
     constructor(private http: HttpClient, private router: Router, private jwtTokenService: JwtTokenService, private mathService: MathService) { }
 
 
     public createUser(user: UserDataRequestDto): Observable<string | null> {
         return this.http.post(
-            'http://localhost:8081/signup',
+            authUrl + 'signup',
             user, { headers: this.headers, observe: 'response', responseType: 'text' }).pipe(
                 map((response => (response.body)))
             );
@@ -26,7 +27,7 @@ export class UserService {
 
     public resendConfirmationMail(username: UsernameDto): Observable<string | null> {
         return this.http.post(
-            'http://localhost:8081/resend_confirmation_mail',
+            authUrl + 'resend_confirmation_mail',
             username, { headers: this.headers, observe: 'response', responseType: 'text' }).pipe(
                 map((response => (response.body)))
             );
@@ -34,7 +35,7 @@ export class UserService {
 
     public authenticateUser(user: LoginDataDto): Observable<string | null> {
         return this.http.post(
-            'http://localhost:8081/login',
+            authUrl + 'login',
             user, { headers: this.headers, observe: 'response', responseType: 'text' }).pipe(
                 map((response => (response.body)))
             );
@@ -42,7 +43,7 @@ export class UserService {
 
     public fetchUser(username: string): Observable<User> {
         return this.http.get<UserDataResponseDto>(
-            `http://localhost:8080/users/${username}`, { responseType: 'json' }).pipe(
+            url + `users/${username}`, { responseType: 'json' }).pipe(
                 map(user => ({
                     username: user.username,
                     email: user.email,
@@ -56,13 +57,13 @@ export class UserService {
     public logOut(): Observable<any> {
         localStorage.removeItem('logged_user');
         return this.http.post(
-            'http://localhost:8081/logout',
+            authUrl + 'logout',
             { headers: this.headers, observe: 'response', responseType: 'json' })
     }
 
     public deleteUser(deleteData: UsernameDto): Observable<any> {
         return this.http.post(
-            'http://localhost:8080/delete_user',
+            url + 'delete_user',
             deleteData, { headers: this.headers, observe: 'response', responseType: 'json' });
     }
 
